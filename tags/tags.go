@@ -1,4 +1,4 @@
-package repositories
+package tags
 
 import (
 	"encoding/json"
@@ -10,8 +10,8 @@ import (
 	"sort"
 )
 
-type Repositories interface {
-	List(registry model.Registry) ([]model.RepositoryName, error)
+type Tags interface {
+	List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error)
 }
 
 type repositories struct {
@@ -24,8 +24,8 @@ func New(httpClient *http.Client) *repositories {
 	return c
 }
 
-func (r *repositories) List(registry model.Registry) ([]model.RepositoryName, error) {
-	url := fmt.Sprintf("%s/v2/_catalog", registry.Name.Url())
+func (r *repositories) List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error) {
+	url := fmt.Sprintf("%s/v2/%v/tags/list", registry.Name.Url(), repositoryName.String())
 	glog.V(2).Infof("request url: %v", url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -38,6 +38,7 @@ func (r *repositories) List(registry model.Registry) ([]model.RepositoryName, er
 		glog.V(0).Infof("perform http request failed: %v", err)
 		return nil, err
 	}
+	glog.V(4).Infof("response %d", resp.StatusCode)
 	if resp.StatusCode/100 != 2 {
 		return nil, fmt.Errorf("request failed with status: %d", resp.StatusCode)
 	}
@@ -50,11 +51,11 @@ func (r *repositories) List(registry model.Registry) ([]model.RepositoryName, er
 	if glog.V(4) {
 		glog.Infof(string(reader.Bytes()))
 	}
-	repositories := response.Repositories
-	sort.Sort(model.RepositoryNamesByName(repositories))
-	return repositories, nil
+	tags := response.Tags
+	sort.Sort(model.TagsByName(tags))
+	return tags, nil
 }
 
 type response struct {
-	Repositories []model.RepositoryName `json:"repositories"`
+	Tags []model.Tag `json:"tags"`
 }

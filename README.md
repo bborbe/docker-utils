@@ -4,10 +4,10 @@ Package provide some docker utils
 
 ## List remote images
 
-`go get github.com/bborbe/docker_utils/bin/docker_remote_images`
+`go get github.com/bborbe/docker_utils/bin/docker_remote_repositories`
 
 ```
-docker_remote_images \
+docker_remote_repositories \
 -registry=docker.seibert-media.net \
 -username=seibertmedia \
 -password=xxx \
@@ -17,14 +17,16 @@ docker_remote_images \
 
 ## List tags of remote image
 
-`go get github.com/bborbe/docker_utils/bin/docker_remote_images_tags`
+`go get github.com/bborbe/docker_utils/bin/docker_remote_tags`
 
 ```
-docker_remote_images \
---username=bborbe \
---password=xxx \
---registry=docker.io \
---image=bborbe/auth
+docker_remote_tags \
+-registry=docker.seibert-media.net \
+-username=seibertmedia \
+-password=xxx \
+-repository=seibertmedia/codeyard-http-proxy \
+-alsologtostderr \
+-v=0
 ```
 
 ## Check if remote image with tag exists
@@ -32,11 +34,11 @@ docker_remote_images \
 `go get github.com/bborbe/docker_utils/bin/docker_remote_tag_exists`
 
 ```
-docker_remote_images \
+docker_remote_tag_exists \
 --username=bborbe \
 --password=xxx \
 --registry=docker.io \
---image=bborbe/auth \
+--image=seibertmedia/codeyard-http-proxy \
 --tag=latest
 ```
 
