@@ -1,0 +1,15 @@
+{
+  "name": "ip",
+  "section": "utils",
+  "priority": "optional",
+  "architecture": "amd64",
+  "maintainer": "Benjamin Borbe <bborbe@rocketnews.de>",
+  "description": "Password Generator",
+  "postinst": "src/github.com/bborbe/ip/postinst",
+  "files": [
+    {
+      "source": "bin/ip_server",
+      "target": "/opt/ip/bin/ip_server"
+    }
+  ]
+}
