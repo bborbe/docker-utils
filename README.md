@@ -8,8 +8,8 @@ Package provide some docker utils
 
 ```
 docker_remote_repositories \
--registry=docker.seibert-media.net \
--username=seibertmedia \
+-registry=docker.benjamin-borbe.de \
+-username=bborbe \
 -password=xxx \
 -alsologtostderr \
 -v=0
@@ -21,10 +21,10 @@ docker_remote_repositories \
 
 ```
 docker_remote_tags \
--registry=docker.seibert-media.net \
--username=seibertmedia \
+-registry=docker.benjamin-borbe.de \
+-username=bborbe \
 -password=xxx \
--repository=seibertmedia/codeyard-http-proxy \
+-repository=bborbe/auth-http-proxy \
 -alsologtostderr \
 -v=0
 ```
@@ -35,11 +35,13 @@ docker_remote_tags \
 
 ```
 docker_remote_tag_exists \
---username=bborbe \
---password=xxx \
---registry=docker.io \
---image=seibertmedia/codeyard-http-proxy \
---tag=latest
+-registry=docker.benjamin-borbe.de \
+-username=bborbe \
+-password=xxx \
+-repository=bborbe/auth-http-proxy \
+-tag=1.0.1 \
+-alsologtostderr \
+-v=0
 ```
 
 ## Continuous integration
