@@ -12,19 +12,36 @@ import (
 
 type Tags interface {
 	List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error)
+	Exists(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (bool, error)
 }
 
-type repositories struct {
+type tagsConnector struct {
 	httpClient *http.Client
 }
 
-func New(httpClient *http.Client) *repositories {
-	c := new(repositories)
+func New(httpClient *http.Client) *tagsConnector {
+	c := new(tagsConnector)
 	c.httpClient = httpClient
 	return c
 }
 
-func (r *repositories) List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error) {
+func (r *tagsConnector) Exists(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (bool, error) {
+	tags, err := r.List(registry, repositoryName)
+	if err != nil {
+		glog.V(2).Infof("list tags failed: %v", err)
+		return false, err
+	}
+	for _, t := range tags {
+		if t == tag {
+			glog.V(2).Infof("found tag")
+			return true, nil
+		}
+	}
+	glog.V(2).Infof("tag not found")
+	return false, nil
+}
+
+func (r *tagsConnector) List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error) {
 	url := fmt.Sprintf("%s/v2/%v/tags/list", registry.Name.Url(), repositoryName.String())
 	glog.V(2).Infof("request url: %v", url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
