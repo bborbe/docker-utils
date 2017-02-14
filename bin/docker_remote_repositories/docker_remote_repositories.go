@@ -12,15 +12,17 @@ import (
 )
 
 const (
-	PARAMETER_REGISTRY = "registry"
-	PARAMETER_USER     = "username"
-	PARAMETER_PASS     = "password"
+	parameterRegistry     = "registry"
+	parameterUsername     = "username"
+	parameterPassword     = "password"
+	parameterPasswordFile = "passwordfile"
 )
 
 var (
-	registryPtr = flag.String(PARAMETER_REGISTRY, "", "Registry")
-	usernamePtr = flag.String(PARAMETER_USER, "", "Username")
-	passwordPtr = flag.String(PARAMETER_PASS, "", "Password")
+	registryPtr     = flag.String(parameterRegistry, "", "Registry")
+	usernamePtr     = flag.String(parameterUsername, "", "Username")
+	passwordPtr     = flag.String(parameterPassword, "", "Password")
+	passwordFilePtr = flag.String(parameterPasswordFile, "", "Password-File")
 )
 
 func main() {
@@ -35,10 +37,18 @@ func main() {
 }
 
 func do(writer io.Writer) error {
+	var err error
+	password := model.RegistryPassword(*passwordPtr)
+	if len(*passwordFilePtr) > 0 {
+		password, err = model.RegistryPasswordFromFile(*passwordFilePtr)
+		if err != nil {
+			return err
+		}
+	}
 	registry := model.Registry{
 		Name:     model.RegistryName(*registryPtr),
 		Username: model.RegistryUsername(*usernamePtr),
-		Password: model.RegistryPassword(*passwordPtr),
+		Password: password,
 	}
 	glog.V(2).Infof("use registry %v", registry)
 	if err := registry.Validate(); err != nil {

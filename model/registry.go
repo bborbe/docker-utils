@@ -3,6 +3,8 @@ package model
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"strings"
 )
 
 type RegistryUsername string
@@ -29,6 +31,14 @@ func (r RegistryPassword) Validate() error {
 		return errors.New("password empty")
 	}
 	return nil
+}
+
+func RegistryPasswordFromFile(path string) (RegistryPassword, error) {
+	content, err := ioutil.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+	return RegistryPassword(strings.TrimSpace(string(content))), nil
 }
 
 type RegistryName string
