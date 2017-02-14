@@ -19,7 +19,7 @@ case "$1" in
 
   configure)
     chown -R root:root /opt/docker_utils
-    find /opt/ip -type d -exec chmod 755 "{}" \;
+    find /opt/docker_utils -type d -exec chmod 755 "{}" \;
     exit 0
   ;;
 
