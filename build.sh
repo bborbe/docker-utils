@@ -1,7 +1,7 @@
 #!/bin/sh
 
 SOURCEDIRECTORY="github.com/bborbe/docker_utils"
-VERSION="1.0.1-b${BUILD_NUMBER}"
+VERSION="1.1.0-b${BUILD_NUMBER}"
 NAME="docker-utils"
 
 ################################################################################
