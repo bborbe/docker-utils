@@ -44,6 +44,21 @@ docker_remote_tag_exists \
 -v=0
 ```
 
+## Delete image tag
+
+`go get github.com/bborbe/docker_utils/bin/docker_remote_tag_delete`
+
+```
+docker_remote_tag_delete \
+-registry=docker.benjamin-borbe.de \
+-username=bborbe \
+-password=xxx \
+-repository=bborbe/auth-http-proxy \
+-tag=1.0.1 \
+-alsologtostderr \
+-v=0
+```
+
 ## Continuous integration
 
 [Jenkins](https://jenkins.benjamin-borbe.de/job/Go-Docker-Utils/)

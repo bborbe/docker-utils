@@ -11,8 +11,9 @@ import (
 )
 
 type Tags interface {
-	List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error)
+	Delete(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (error)
 	Exists(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (bool, error)
+	List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error)
 }
 
 type tagsConnector struct {
@@ -23,6 +24,47 @@ func New(httpClient *http.Client) *tagsConnector {
 	c := new(tagsConnector)
 	c.httpClient = httpClient
 	return c
+}
+
+func (r *tagsConnector) Delete(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (error) {
+	dockerContentDigest, err := r.dockerContentDigest(registry, repositoryName, tag)
+	if err != nil {
+		return fmt.Errorf("get content digest failed: %v", err)
+	}
+	url := fmt.Sprintf("%s/v2/%v/manifests/%v", registry.Name.Url(), repositoryName.String(), dockerContentDigest)
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	if err != nil {
+		return fmt.Errorf("build request failed: %v", err)
+	}
+	req.SetBasicAuth(registry.Username.String(), registry.Password.String())
+	resp, err := r.httpClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("perform http request failed: %v", err)
+	}
+	if resp.StatusCode/100 != 2 {
+		return fmt.Errorf("http status code %v != 2xx", resp.StatusCode)
+	}
+	glog.V(2).Infof("tag deleted")
+	return nil
+}
+
+func (r *tagsConnector) dockerContentDigest(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (string, error) {
+	url := fmt.Sprintf("%s/v2/%v/manifests/%v", registry.Name.Url(), repositoryName.String(), tag.String())
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return "", fmt.Errorf("build request failed: %v", err)
+	}
+	req.Header.Add("Accept", "application/vnd.docker.distribution.manifest.v2+json")
+	req.SetBasicAuth(registry.Username.String(), registry.Password.String())
+	resp, err := r.httpClient.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("perform http request failed: %v", err)
+	}
+	if resp.StatusCode/100 != 2 {
+		return "", fmt.Errorf("http status code %v != 2xx", resp.StatusCode)
+	}
+	return resp.Header.Get("Docker-Content-Digest"), nil
+
 }
 
 func (r *tagsConnector) Exists(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (bool, error) {

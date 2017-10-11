@@ -16,6 +16,10 @@
 			"target": "/opt/docker_utils/bin/docker_remote_tag_exists"
 		},
 		{
+			"source": "bin/docker_remote_tag_delete",
+			"target": "/opt/docker_utils/bin/docker_remote_tag_delete"
+		},
+		{
 			"source": "bin/docker_remote_tags",
 			"target": "/opt/docker_utils/bin/docker_remote_tags"
 		}
