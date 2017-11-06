@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+	"github.com/bborbe/io/util"
+	"os"
+	"encoding/json"
+	"encoding/base64"
 )
 
 type RegistryUsername string
@@ -62,6 +66,43 @@ type Registry struct {
 	Name     RegistryName
 	Username RegistryUsername
 	Password RegistryPassword
+}
+
+func (r *Registry) ReadCredentialsFromDockerConfig() error {
+	dockerConfig := "~/.docker/config.json"
+	var data struct {
+		Auths struct {
+			Domain map[string]struct {
+				Auth string `json:"auth"`
+			} `json:"auths"`
+		} `json:"auths"`
+	}
+	path, err := util.NormalizePath(dockerConfig)
+	if err != nil {
+		return fmt.Errorf("normalize path %s failed: %v", dockerConfig, err)
+	}
+	file, err := os.Open(path)
+	if err != nil {
+		return fmt.Errorf("open file %s failed: %v", path, err)
+	}
+	if err := json.NewDecoder(file).Decode(data); err != nil {
+		return fmt.Errorf("decode json failed: %v", err)
+	}
+	auth, ok := data.Auths.Domain[r.Name.String()];
+	if !ok {
+		return fmt.Errorf("domain %s not found in docker config", r.Name)
+	}
+	value, err := base64.StdEncoding.DecodeString(auth.Auth)
+	if err != nil {
+		return fmt.Errorf("base64 decode auth failed: %v", err)
+	}
+	parts := strings.SplitN(string(value), ":", 2)
+	if len(parts) != 2 {
+		return fmt.Errorf("split auth failed")
+	}
+	r.Username = RegistryUsername(parts[0])
+	r.Password = RegistryPassword(parts[1])
+	return nil
 }
 
 func (r Registry) Validate() error {

@@ -11,22 +11,15 @@ import (
 	"runtime"
 )
 
-const (
-	parameterRegistry     = "registry"
-	parameterUsername     = "username"
-	parameterPassword     = "password"
-	parameterPasswordFile = "passwordfile"
-	parameterRepository   = "repository"
-	parameterTag          = "tag"
-)
 
 var (
-	registryPtr     = flag.String(parameterRegistry, "", "Registry")
-	usernamePtr     = flag.String(parameterUsername, "", "Username")
-	passwordPtr     = flag.String(parameterPassword, "", "Password")
-	passwordFilePtr = flag.String(parameterPasswordFile, "", "Password-File")
-	repositoryPtr   = flag.String(parameterRepository, "", "Repository")
-	tagPtr          = flag.String(parameterTag, "", "Tag")
+	registryPtr            = flag.String(model.ParameterRegistry, "", "Registry")
+	usernamePtr            = flag.String(model.ParameterUsername, "", "Username")
+	passwordPtr            = flag.String(model.ParameterPassword, "", "Password")
+	passwordFilePtr        = flag.String(model.ParameterPasswordFile, "", "Password-File")
+	repositoryPtr          = flag.String(model.ParameterRepository, "", "Repository")
+	tagPtr                 = flag.String(model.ParameterTag, "", "Tag")
+	credentialsfromfilePtr = flag.Bool(model.ParameterCredentialsFromDockerConfig, false, "Read Username and Password from ~/.docker/config.json")
 )
 
 func main() {
@@ -46,7 +39,7 @@ func do(writer io.Writer) error {
 	if len(*passwordFilePtr) > 0 {
 		password, err = model.RegistryPasswordFromFile(*passwordFilePtr)
 		if err != nil {
-			return err
+			return fmt.Errorf("get password from file failed: %v", err)
 		}
 	}
 	registry := model.Registry{
@@ -54,12 +47,17 @@ func do(writer io.Writer) error {
 		Username: model.RegistryUsername(*usernamePtr),
 		Password: password,
 	}
+	if *credentialsfromfilePtr {
+		if err := registry.ReadCredentialsFromDockerConfig(); err != nil {
+			return fmt.Errorf("read credentials failed: %v", err)
+		}
+	}
 	repositoryName := model.RepositoryName(*repositoryPtr)
 	tag := model.Tag(*tagPtr)
 
 	glog.V(2).Infof("use registry %v, repo %v and tag %v", registry, repositoryName, tag)
 	if err := registry.Validate(); err != nil {
-		return err
+		return fmt.Errorf("validate registry failed: %v", err)
 	}
 	factory := docker_utils_factory.New()
 	exists, err := factory.Tags().Exists(registry, repositoryName, tag)

@@ -11,18 +11,14 @@ import (
 	"runtime"
 )
 
-const (
-	parameterRegistry     = "registry"
-	parameterUsername     = "username"
-	parameterPassword     = "password"
-	parameterPasswordFile = "passwordfile"
-)
+
 
 var (
-	registryPtr     = flag.String(parameterRegistry, "", "Registry")
-	usernamePtr     = flag.String(parameterUsername, "", "Username")
-	passwordPtr     = flag.String(parameterPassword, "", "Password")
-	passwordFilePtr = flag.String(parameterPasswordFile, "", "Password-File")
+	registryPtr     = flag.String(model.ParameterRegistry, "", "Registry")
+	usernamePtr     = flag.String(model.ParameterUsername, "", "Username")
+	passwordPtr     = flag.String(model.ParameterPassword, "", "Password")
+	passwordFilePtr = flag.String(model.ParameterPasswordFile, "", "Password-File")
+	credentialsfromfilePtr = flag.Bool(model.ParameterCredentialsFromDockerConfig, false, "Read Username and Password from ~/.docker/config.json")
 )
 
 func main() {
@@ -50,9 +46,14 @@ func do(writer io.Writer) error {
 		Username: model.RegistryUsername(*usernamePtr),
 		Password: password,
 	}
+	if *credentialsfromfilePtr {
+		if err := registry.ReadCredentialsFromDockerConfig(); err != nil {
+			return fmt.Errorf("read credentials failed: %v", err)
+		}
+	}
 	glog.V(2).Infof("use registry %v", registry)
 	if err := registry.Validate(); err != nil {
-		return err
+		return fmt.Errorf("validate registry failed: %v", err)
 	}
 	factory := docker_utils_factory.New()
 	repositories, err := factory.Repositories().List(registry)
