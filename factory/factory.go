@@ -1,10 +1,11 @@
 package factory
 
 import (
+	"net/http"
+
 	"github.com/bborbe/docker_utils/repositories"
 	"github.com/bborbe/docker_utils/tags"
 	http_client_builder "github.com/bborbe/http/client_builder"
-	"net/http"
 )
 
 type dockerUtilsFactory struct{}

@@ -1,15 +1,19 @@
 package model
 
 import (
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"strings"
-	"github.com/bborbe/io/util"
-	"os"
-	"encoding/json"
-	"encoding/base64"
 	"io"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"strings"
+
+	"github.com/bborbe/io/util"
+	"github.com/golang/glog"
 )
 
 type RegistryUsername string
@@ -23,6 +27,12 @@ func (r RegistryUsername) Validate() error {
 		return errors.New("username empty")
 	}
 	return nil
+}
+
+type RegistryToken string
+
+func (r RegistryToken) String() string {
+	return string(r)
 }
 
 type RegistryPassword string
@@ -53,6 +63,9 @@ func (r RegistryName) String() string {
 }
 
 func (r RegistryName) Url() string {
+	if r.IsDockerHub() {
+		return "https://hub.docker.com"
+	}
 	return fmt.Sprintf("https://%s", r.String())
 }
 
@@ -63,8 +76,13 @@ func (r RegistryName) Validate() error {
 	return nil
 }
 
+func (r RegistryName) IsDockerHub() bool {
+	return "docker.io" == r.String()
+}
+
 type Registry struct {
 	Name     RegistryName
+	Token    RegistryToken
 	Username RegistryUsername
 	Password RegistryPassword
 }
@@ -91,7 +109,7 @@ func (r *Registry) CredentialsFromDockerConfig(reader io.Reader) error {
 	if err := json.NewDecoder(reader).Decode(&data); err != nil {
 		return fmt.Errorf("decode json failed: %v", err)
 	}
-	auth, ok := data.Domain[nameToDomain(r.Name)];
+	auth, ok := data.Domain[nameToDomain(r.Name)]
 	if !ok {
 		return fmt.Errorf("domain %s not found in docker config", r.Name)
 	}
@@ -109,14 +127,13 @@ func (r *Registry) CredentialsFromDockerConfig(reader io.Reader) error {
 }
 
 func nameToDomain(name RegistryName) string {
-	if "docker.io" == name.String()  {
+	if name.IsDockerHub() {
 		return "https://index.docker.io/v1/"
 	}
 	return name.String()
 }
 
-
-func (r Registry) Validate() error {
+func (r *Registry) Validate() error {
 	if err := r.Name.Validate(); err != nil {
 		return err
 	}
@@ -125,6 +142,46 @@ func (r Registry) Validate() error {
 	}
 	if err := r.Password.Validate(); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (r *Registry) GetToken() (RegistryToken, error) {
+	b := bytes.NewBufferString(fmt.Sprintf(`{"username": "%s", "password": "%s"}`, r.Username, r.Password))
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/v2/users/login/", r.Name.Url()), b)
+	if err != nil {
+		return "", fmt.Errorf("create request failed: %v", err)
+	}
+	req.Header.Add("Content-Type", "application/json")
+	resp, err := http.DefaultClient.Do(req)
+	defer resp.Body.Close()
+	if err != nil {
+		return "", fmt.Errorf("request failed: %v", err)
+	}
+	if resp.StatusCode/100 != 2 {
+		return "", fmt.Errorf("status code %d != 2xx", resp.StatusCode)
+	}
+	var data struct {
+		Token RegistryToken `json:"token"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return "", fmt.Errorf("decode response failed: %v", err)
+	}
+	glog.V(4).Infof("got token: %s", data.Token)
+	return data.Token, nil
+}
+
+func (r *Registry) SetAuth(req *http.Request) error {
+	if r.Name.IsDockerHub() {
+		token, err := r.GetToken()
+		if err != nil {
+			return fmt.Errorf("get token failed: %v", err)
+		}
+		req.Header.Add("Authorization", fmt.Sprintf("JWT %s", token))
+		glog.V(4).Infof("set Authorization header")
+	} else {
+		req.SetBasicAuth(r.Username.String(), r.Password.String())
+		glog.V(4).Infof("set basic auth")
 	}
 	return nil
 }

@@ -2,22 +2,21 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"os"
+	"runtime"
+
 	docker_utils_factory "github.com/bborbe/docker_utils/factory"
 	"github.com/bborbe/docker_utils/model"
 	flag "github.com/bborbe/flagenv"
 	"github.com/golang/glog"
-	"io"
-	"os"
-	"runtime"
 )
 
-
-
 var (
-	registryPtr     = flag.String(model.ParameterRegistry, "", "Registry")
-	usernamePtr     = flag.String(model.ParameterUsername, "", "Username")
-	passwordPtr     = flag.String(model.ParameterPassword, "", "Password")
-	passwordFilePtr = flag.String(model.ParameterPasswordFile, "", "Password-File")
+	registryPtr            = flag.String(model.ParameterRegistry, "", "Registry")
+	usernamePtr            = flag.String(model.ParameterUsername, "", "Username")
+	passwordPtr            = flag.String(model.ParameterPassword, "", "Password")
+	passwordFilePtr        = flag.String(model.ParameterPasswordFile, "", "Password-File")
 	credentialsfromfilePtr = flag.Bool(model.ParameterCredentialsFromDockerConfig, false, "Read Username and Password from ~/.docker/config.json")
 )
 

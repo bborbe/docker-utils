@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"bytes"
+
 	. "github.com/bborbe/assert"
 )
 

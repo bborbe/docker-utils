@@ -3,15 +3,16 @@ package tags
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"sort"
+
 	"github.com/bborbe/docker_utils/model"
 	"github.com/bborbe/io/reader_shadow_copy"
 	"github.com/golang/glog"
-	"net/http"
-	"sort"
 )
 
 type Tags interface {
-	Delete(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (error)
+	Delete(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) error
 	Exists(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (bool, error)
 	List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error)
 }
@@ -26,7 +27,7 @@ func New(httpClient *http.Client) *tagsConnector {
 	return c
 }
 
-func (r *tagsConnector) Delete(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (error) {
+func (r *tagsConnector) Delete(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) error {
 	dockerContentDigest, err := r.dockerContentDigest(registry, repositoryName, tag)
 	if err != nil {
 		return fmt.Errorf("get content digest failed: %v", err)
@@ -36,7 +37,10 @@ func (r *tagsConnector) Delete(registry model.Registry, repositoryName model.Rep
 	if err != nil {
 		return fmt.Errorf("build request failed: %v", err)
 	}
-	req.SetBasicAuth(registry.Username.String(), registry.Password.String())
+	if err := registry.SetAuth(req); err != nil {
+		glog.V(0).Info("set auth failed: %v", err)
+		return err
+	}
 	resp, err := r.httpClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("perform http request failed: %v", err)
@@ -55,7 +59,10 @@ func (r *tagsConnector) dockerContentDigest(registry model.Registry, repositoryN
 		return "", fmt.Errorf("build request failed: %v", err)
 	}
 	req.Header.Add("Accept", "application/vnd.docker.distribution.manifest.v2+json")
-	req.SetBasicAuth(registry.Username.String(), registry.Password.String())
+	if err := registry.SetAuth(req); err != nil {
+		glog.V(0).Info("set auth failed: %v", err)
+		return "", err
+	}
 	resp, err := r.httpClient.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("perform http request failed: %v", err)
@@ -91,7 +98,10 @@ func (r *tagsConnector) List(registry model.Registry, repositoryName model.Repos
 		glog.V(0).Infof("create http request failed: %v", err)
 		return nil, err
 	}
-	req.SetBasicAuth(registry.Username.String(), registry.Password.String())
+	if err := registry.SetAuth(req); err != nil {
+		glog.V(0).Infof("set auth failed: %v", err)
+		return nil, err
+	}
 	resp, err := r.httpClient.Do(req)
 	if err != nil {
 		glog.V(0).Infof("perform http request failed: %v", err)

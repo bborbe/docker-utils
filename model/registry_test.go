@@ -1,8 +1,9 @@
 package model
 
 import (
-	"testing"
 	"bytes"
+	"testing"
+
 	. "github.com/bborbe/assert"
 )
 
@@ -39,5 +40,3 @@ func TestCredentialsFromDockerConfigDockerHub(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-
-

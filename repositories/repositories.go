@@ -3,11 +3,12 @@ package repositories
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"sort"
+
 	"github.com/bborbe/docker_utils/model"
 	"github.com/bborbe/io/reader_shadow_copy"
 	"github.com/golang/glog"
-	"net/http"
-	"sort"
 )
 
 type Repositories interface {
@@ -32,7 +33,10 @@ func (r *repositories) List(registry model.Registry) ([]model.RepositoryName, er
 		glog.V(0).Infof("create http request failed: %v", err)
 		return nil, err
 	}
-	req.SetBasicAuth(registry.Username.String(), registry.Password.String())
+	if err := registry.SetAuth(req); err != nil {
+		glog.V(0).Info("set auth failed: %v", err)
+		return nil, err
+	}
 	resp, err := r.httpClient.Do(req)
 	if err != nil {
 		glog.V(0).Infof("perform http request failed: %v", err)
