@@ -1,0 +1,13 @@
+package: github.com/bborbe/docker_utils
+import:
+- package: github.com/bborbe/flagenv
+- package: github.com/bborbe/http
+  subpackages:
+  - client_builder
+- package: github.com/bborbe/io
+  subpackages:
+  - reader_shadow_copy
+  - util
+- package: github.com/golang/glog
+testImport:
+- package: github.com/bborbe/assert
