@@ -9,6 +9,7 @@ import (
 	"os"
 	"encoding/json"
 	"encoding/base64"
+	"io"
 )
 
 type RegistryUsername string
@@ -70,13 +71,6 @@ type Registry struct {
 
 func (r *Registry) ReadCredentialsFromDockerConfig() error {
 	dockerConfig := "~/.docker/config.json"
-	var data struct {
-		Auths struct {
-			Domain map[string]struct {
-				Auth string `json:"auth"`
-			} `json:"auths"`
-		} `json:"auths"`
-	}
 	path, err := util.NormalizePath(dockerConfig)
 	if err != nil {
 		return fmt.Errorf("normalize path %s failed: %v", dockerConfig, err)
@@ -85,10 +79,19 @@ func (r *Registry) ReadCredentialsFromDockerConfig() error {
 	if err != nil {
 		return fmt.Errorf("open file %s failed: %v", path, err)
 	}
-	if err := json.NewDecoder(file).Decode(data); err != nil {
+	return r.CredentialsFromDockerConfig(file)
+}
+
+func (r *Registry) CredentialsFromDockerConfig(reader io.Reader) error {
+	var data struct {
+		Domain map[string]struct {
+			Auth string `json:"auth"`
+		} `json:"auths"`
+	}
+	if err := json.NewDecoder(reader).Decode(&data); err != nil {
 		return fmt.Errorf("decode json failed: %v", err)
 	}
-	auth, ok := data.Auths.Domain[r.Name.String()];
+	auth, ok := data.Domain[nameToDomain(r.Name)];
 	if !ok {
 		return fmt.Errorf("domain %s not found in docker config", r.Name)
 	}
@@ -104,6 +107,14 @@ func (r *Registry) ReadCredentialsFromDockerConfig() error {
 	r.Password = RegistryPassword(parts[1])
 	return nil
 }
+
+func nameToDomain(name RegistryName) string {
+	if "docker.io" == name.String()  {
+		return "https://index.docker.io/v1/"
+	}
+	return name.String()
+}
+
 
 func (r Registry) Validate() error {
 	if err := r.Name.Validate(); err != nil {
