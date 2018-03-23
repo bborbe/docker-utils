@@ -177,7 +177,7 @@ func (r *Registry) SetAuth(req *http.Request) error {
 		if err != nil {
 			return fmt.Errorf("get token failed: %v", err)
 		}
-		req.Header.Add("Authorization", fmt.Sprintf("JWT %s", token))
+		req.Header.Add("Authorization", fmt.Sprintf("JWT %s", token.String()))
 		glog.V(4).Infof("set Authorization header")
 	} else {
 		req.SetBasicAuth(r.Username.String(), r.Password.String())

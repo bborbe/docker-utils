@@ -91,7 +91,7 @@ func (r *tagsConnector) Exists(registry model.Registry, repositoryName model.Rep
 }
 
 func (r *tagsConnector) List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error) {
-	url := fmt.Sprintf("%s/v2/%v/tags/list", registry.Name.Url(), repositoryName.String())
+	url := fmt.Sprintf("%s/v2/repositories/%v/tags/", registry.Name.Url(), repositoryName.String())
 	glog.V(2).Infof("request url: %v", url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -111,7 +111,11 @@ func (r *tagsConnector) List(registry model.Registry, repositoryName model.Repos
 	if resp.StatusCode/100 != 2 {
 		return nil, fmt.Errorf("request failed with status: %d", resp.StatusCode)
 	}
-	var response response
+	var response struct {
+		Results []struct {
+			Name model.Tag `json:"name"`
+		} `json:"results"`
+	}
 	reader := reader_shadow_copy.New(resp.Body)
 	if err := json.NewDecoder(reader).Decode(&response); err != nil {
 		glog.V(0).Infof("decode http response to json failed: %v", err)
@@ -120,11 +124,10 @@ func (r *tagsConnector) List(registry model.Registry, repositoryName model.Repos
 	if glog.V(4) {
 		glog.Infof(string(reader.Bytes()))
 	}
-	tags := response.Tags
+	var tags []model.Tag
+	for _, result := range response.Results {
+		tags = append(tags, result.Name)
+	}
 	sort.Sort(model.TagsByName(tags))
 	return tags, nil
-}
-
-type response struct {
-	Tags []model.Tag `json:"tags"`
 }
