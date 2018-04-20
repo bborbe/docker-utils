@@ -47,13 +47,13 @@ podTemplate(
 					timeout(time: 5, unit: 'MINUTES') {
 						sh """
 						mkdir -p /go/src/github.com/bborbe
-						ln -s `pwd` /go/src/github.com/bborbe/assert
+						ln -s `pwd` /go/src/github.com/bborbe/docker-utils
 						"""
 					}
 				}
 				stage('Golang Test') {
 					timeout(time: 15, unit: 'MINUTES') {
-						sh "cd /go/src/github.com/bborbe/assert && make test"
+						sh "cd /go/src/github.com/bborbe/docker-utils && make test"
 					}
 				}
 			}
