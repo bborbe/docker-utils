@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/bborbe/docker_utils/model"
+	"github.com/bborbe/docker-utils/model"
 	"github.com/bborbe/io/reader_shadow_copy"
 	"github.com/golang/glog"
 )
