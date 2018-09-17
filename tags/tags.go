@@ -15,6 +15,7 @@ type Tags interface {
 	Delete(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) error
 	Exists(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (bool, error)
 	List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error)
+	Sha(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (string, error)
 }
 
 type tagsConnector struct {
@@ -28,7 +29,7 @@ func New(httpClient *http.Client) *tagsConnector {
 }
 
 func (r *tagsConnector) Delete(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) error {
-	dockerContentDigest, err := r.dockerContentDigest(registry, repositoryName, tag)
+	dockerContentDigest, err := r.Sha(registry, repositoryName, tag)
 	if err != nil {
 		return fmt.Errorf("get content digest failed: %v", err)
 	}
@@ -52,7 +53,7 @@ func (r *tagsConnector) Delete(registry model.Registry, repositoryName model.Rep
 	return nil
 }
 
-func (r *tagsConnector) dockerContentDigest(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (string, error) {
+func (r *tagsConnector) Sha(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (string, error) {
 	url := fmt.Sprintf("%s/v2/%v/manifests/%v", registry.Name.Url(), repositoryName.String(), tag.String())
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
