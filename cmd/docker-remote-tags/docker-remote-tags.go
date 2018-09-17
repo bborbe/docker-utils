@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"io"
 	"os"
 	"runtime"
@@ -28,7 +29,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	writer := os.Stdout
 	if err := do(writer); err != nil {
-		glog.Exit(err)
+		glog.Exitf("%+v", err)
 	}
 }
 
@@ -38,7 +39,7 @@ func do(writer io.Writer) error {
 	if len(*passwordFilePtr) > 0 {
 		password, err = model.RegistryPasswordFromFile(*passwordFilePtr)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "read registry password from file")
 		}
 	}
 	registry := model.Registry{
@@ -48,18 +49,18 @@ func do(writer io.Writer) error {
 	}
 	if *credentialsfromfilePtr {
 		if err := registry.ReadCredentialsFromDockerConfig(); err != nil {
-			return fmt.Errorf("read credentials failed: %v", err)
+			return errors.Wrap(err, "read credentials failed")
 		}
 	}
 	repositoryName := model.RepositoryName(*repositoryPtr)
 	glog.V(2).Infof("use registry %v and repo %v", registry, repositoryName)
 	if err := registry.Validate(); err != nil {
-		return fmt.Errorf("validate registry failed: %v", err)
+		return errors.Wrap(err, "validate registry failed")
 	}
 	factory := docker_utils_factory.New()
 	tags, err := factory.Tags().List(registry, repositoryName)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "list tags failed")
 	}
 	for _, tag := range tags {
 		fmt.Fprintf(writer, "%s\n", tag.String())

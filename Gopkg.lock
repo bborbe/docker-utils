@@ -3,19 +3,19 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:7a733aa0512f8422488391ccd4a766bb934acb1b4b5e29749f0f3c7fdfd25e4c"
+  digest = "1:3a140306d7151491c83a326c7af43598d4b4edcf30ffd74c7c1b43f6bcbf283c"
   name = "github.com/bborbe/assert"
   packages = ["."]
   pruneopts = "UT"
-  revision = "ab840eecbae389bab6d11872115ade11e687f88c"
+  revision = "2380757c64e19114afcb9bebe6e724c2026fae6a"
 
 [[projects]]
   branch = "master"
-  digest = "1:a055b2593a6048c6c724e91c35642d1fe306d50ce6acf86310675a57f9940314"
+  digest = "1:936d21455d9f0c5cfa8f15f60b9606a9b54f1f251c2a72cc2f8f2197d0e211dd"
   name = "github.com/bborbe/flagenv"
   packages = ["."]
   pruneopts = "UT"
-  revision = "4bf10dbe62f41ce40353a70225a84decfd16d3ac"
+  revision = "121c0cff072d7535484fc4a6163d9a4fefb07f58"
 
 [[projects]]
   branch = "master"
@@ -23,18 +23,18 @@
   name = "github.com/bborbe/http"
   packages = ["client_builder"]
   pruneopts = "UT"
-  revision = "b783a5e87f98911552ef543db3624f3ce52d79c1"
+  revision = "efee63a8d109311e9e85d69c3d49e3f99fb70996"
 
 [[projects]]
   branch = "master"
-  digest = "1:5ecff068c8fa563e1db5a114a3801f2c90514a9fa1ee0bc00f99414aa6b88d57"
+  digest = "1:7b273ff5e4e27327f4194b72bc0e86cb2352a66bae86b2b67c65819b19581497"
   name = "github.com/bborbe/io"
   packages = [
     "reader_shadow_copy",
     "util",
   ]
   pruneopts = "UT"
-  revision = "8c22cf733cf166b247318b0786eec0c7cad9208a"
+  revision = "54b762caaee8af23d13c8b5a58fdfdb481ce5816"
 
 [[projects]]
   branch = "master"

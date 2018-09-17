@@ -3,6 +3,7 @@ package repositories
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/pkg/errors"
 	"net/http"
 	"sort"
 
@@ -30,26 +31,22 @@ func (r *repositories) List(registry model.Registry) ([]model.RepositoryName, er
 	glog.V(2).Infof("request url: %v", url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		glog.V(0).Infof("create http request failed: %v", err)
-		return nil, err
+		return nil, errors.Wrap(err, "create http request failed")
 	}
 	if err := registry.SetAuth(req); err != nil {
-		glog.V(0).Info("set auth failed: %v", err)
-		return nil, err
+		return nil, errors.Wrap(err, "set auth failed")
 	}
 	resp, err := r.httpClient.Do(req)
 	if err != nil {
-		glog.V(0).Infof("perform http request failed: %v", err)
-		return nil, err
+		return nil, errors.Wrap(err, "perform http request failed")
 	}
 	if resp.StatusCode/100 != 2 {
-		return nil, fmt.Errorf("request failed with status: %d", resp.StatusCode)
+		return nil, errors.Wrapf(err, "request failed with status: %d", resp.StatusCode)
 	}
 	var response response
 	reader := reader_shadow_copy.New(resp.Body)
 	if err := json.NewDecoder(reader).Decode(&response); err != nil {
-		glog.V(0).Infof("decode http response to json failed: %v", err)
-		return nil, err
+		return nil, errors.Wrap(err, "decode http response to json failed")
 	}
 	if glog.V(4) {
 		glog.Infof(string(reader.Bytes()))

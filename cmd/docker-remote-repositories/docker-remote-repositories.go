@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"io"
 	"os"
 	"runtime"
@@ -27,7 +28,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	writer := os.Stdout
 	if err := do(writer); err != nil {
-		glog.Exit(err)
+		glog.Exitf("%+v", err)
 	}
 }
 
@@ -47,12 +48,12 @@ func do(writer io.Writer) error {
 	}
 	if *credentialsfromfilePtr {
 		if err := registry.ReadCredentialsFromDockerConfig(); err != nil {
-			return fmt.Errorf("read credentials failed: %v", err)
+			return errors.Wrap(err, "read credentials failed")
 		}
 	}
 	glog.V(2).Infof("use registry %v", registry)
 	if err := registry.Validate(); err != nil {
-		return fmt.Errorf("validate registry failed: %v", err)
+		return errors.Wrap(err, "validate registry failed")
 	}
 	factory := docker_utils_factory.New()
 	repositories, err := factory.Repositories().List(registry)

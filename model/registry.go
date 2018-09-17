@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"github.com/pkg/errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -91,11 +91,11 @@ func (r *Registry) ReadCredentialsFromDockerConfig() error {
 	dockerConfig := "~/.docker/config.json"
 	path, err := util.NormalizePath(dockerConfig)
 	if err != nil {
-		return fmt.Errorf("normalize path %s failed: %v", dockerConfig, err)
+		return errors.Wrapf(err, "normalize path %s failed", dockerConfig)
 	}
 	file, err := os.Open(path)
 	if err != nil {
-		return fmt.Errorf("open file %s failed: %v", path, err)
+		return errors.Wrapf(err, "open file %s failed", path)
 	}
 	return r.CredentialsFromDockerConfig(file)
 }
@@ -107,7 +107,7 @@ func (r *Registry) CredentialsFromDockerConfig(reader io.Reader) error {
 		} `json:"auths"`
 	}
 	if err := json.NewDecoder(reader).Decode(&data); err != nil {
-		return fmt.Errorf("decode json failed: %v", err)
+		return errors.Wrap(err, "decode json failed")
 	}
 	auth, ok := data.Domain[nameToDomain(r.Name)]
 	if !ok {
@@ -115,11 +115,11 @@ func (r *Registry) CredentialsFromDockerConfig(reader io.Reader) error {
 	}
 	value, err := base64.StdEncoding.DecodeString(auth.Auth)
 	if err != nil {
-		return fmt.Errorf("base64 decode auth failed: %v", err)
+		return errors.Wrap(err, "base64 decode auth failed")
 	}
 	parts := strings.SplitN(string(value), ":", 2)
 	if len(parts) != 2 {
-		return fmt.Errorf("split auth failed")
+		return errors.New("split auth failed")
 	}
 	r.Username = RegistryUsername(parts[0])
 	r.Password = RegistryPassword(parts[1])
@@ -150,13 +150,13 @@ func (r *Registry) GetToken() (RegistryToken, error) {
 	b := bytes.NewBufferString(fmt.Sprintf(`{"username": "%s", "password": "%s"}`, r.Username, r.Password))
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/v2/users/login/", r.Name.Url()), b)
 	if err != nil {
-		return "", fmt.Errorf("create request failed: %v", err)
+		return "", errors.Wrap(err, "create request failed")
 	}
 	req.Header.Add("Content-Type", "application/json")
 	resp, err := http.DefaultClient.Do(req)
 	defer resp.Body.Close()
 	if err != nil {
-		return "", fmt.Errorf("request failed: %v", err)
+		return "", errors.Wrap(err, "request failed")
 	}
 	if resp.StatusCode/100 != 2 {
 		return "", fmt.Errorf("status code %d != 2xx", resp.StatusCode)
@@ -165,7 +165,7 @@ func (r *Registry) GetToken() (RegistryToken, error) {
 		Token RegistryToken `json:"token"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		return "", fmt.Errorf("decode response failed: %v", err)
+		return "", errors.Wrap(err, "decode response failed")
 	}
 	glog.V(4).Infof("got token: %s", data.Token)
 	return data.Token, nil
@@ -175,7 +175,7 @@ func (r *Registry) SetAuth(req *http.Request) error {
 	if r.Name.IsDockerHub() {
 		token, err := r.GetToken()
 		if err != nil {
-			return fmt.Errorf("get token failed: %v", err)
+			return  errors.Wrap(err, "get token failed")
 		}
 		req.Header.Add("Authorization", fmt.Sprintf("JWT %s", token.String()))
 		glog.V(4).Infof("set Authorization header")

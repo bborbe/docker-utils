@@ -3,6 +3,7 @@ package tags
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/pkg/errors"
 	"net/http"
 	"sort"
 
@@ -31,20 +32,19 @@ func New(httpClient *http.Client) *tagsConnector {
 func (r *tagsConnector) Delete(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) error {
 	dockerContentDigest, err := r.Sha(registry, repositoryName, tag)
 	if err != nil {
-		return fmt.Errorf("get content digest failed: %v", err)
+		return errors.Wrap(err, "get content digest failed")
 	}
 	url := fmt.Sprintf("%s/v2/%v/manifests/%v", registry.Name.Url(), repositoryName.String(), dockerContentDigest)
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
-		return fmt.Errorf("build request failed: %v", err)
+		return errors.Wrap(err, "build request failed")
 	}
 	if err := registry.SetAuth(req); err != nil {
-		glog.V(0).Info("set auth failed: %v", err)
-		return err
+		return errors.Wrap(err, "set auth failed")
 	}
 	resp, err := r.httpClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("perform http request failed: %v", err)
+		return errors.Wrap(err, "perform http request failed")
 	}
 	if resp.StatusCode/100 != 2 {
 		return fmt.Errorf("http status code %v != 2xx", resp.StatusCode)
@@ -57,16 +57,15 @@ func (r *tagsConnector) Sha(registry model.Registry, repositoryName model.Reposi
 	url := fmt.Sprintf("%s/v2/%v/manifests/%v", registry.Name.Url(), repositoryName.String(), tag.String())
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		return "", fmt.Errorf("build request failed: %v", err)
+		return "", errors.Wrap(err, "build request failed")
 	}
 	req.Header.Add("Accept", "application/vnd.docker.distribution.manifest.v2+json")
 	if err := registry.SetAuth(req); err != nil {
-		glog.V(0).Info("set auth failed: %v", err)
-		return "", err
+		return "", errors.Wrap(err, "set auth failed")
 	}
 	resp, err := r.httpClient.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("perform http request failed: %v", err)
+		return "", errors.Wrap(err, "perform http request failed")
 	}
 	if resp.StatusCode/100 != 2 {
 		return "", fmt.Errorf("http status code %v != 2xx", resp.StatusCode)
@@ -78,8 +77,7 @@ func (r *tagsConnector) Sha(registry model.Registry, repositoryName model.Reposi
 func (r *tagsConnector) Exists(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (bool, error) {
 	tags, err := r.List(registry, repositoryName)
 	if err != nil {
-		glog.V(2).Infof("list tags failed: %v", err)
-		return false, err
+		return false, errors.Wrap(err, "list tags failed")
 	}
 	for _, t := range tags {
 		if t == tag {
@@ -96,17 +94,14 @@ func (r *tagsConnector) List(registry model.Registry, repositoryName model.Repos
 	glog.V(2).Infof("request url: %v", url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		glog.V(0).Infof("create http request failed: %v", err)
-		return nil, err
+		return nil, errors.Wrap(err, "create http request failed")
 	}
 	if err := registry.SetAuth(req); err != nil {
-		glog.V(0).Infof("set auth failed: %v", err)
-		return nil, err
+		return nil, errors.Wrap(err, "set auth failed")
 	}
 	resp, err := r.httpClient.Do(req)
 	if err != nil {
-		glog.V(0).Infof("perform http request failed: %v", err)
-		return nil, err
+		return nil, errors.Wrap(err, "perform http request failed")
 	}
 	glog.V(4).Infof("response %d", resp.StatusCode)
 	if resp.StatusCode/100 != 2 {
@@ -118,8 +113,7 @@ func (r *tagsConnector) List(registry model.Registry, repositoryName model.Repos
 	}
 	reader := reader_shadow_copy.New(resp.Body)
 	if err := json.NewDecoder(reader).Decode(&response); err != nil {
-		glog.V(0).Infof("decode http response to json failed: %v", err)
-		return nil, err
+		return nil, errors.Wrap(err, "decode http response to json failed")
 	}
 	if glog.V(4) {
 		glog.Infof(string(reader.Bytes()))

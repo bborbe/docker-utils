@@ -5,9 +5,7 @@ import (
 	"io"
 	"os"
 	"runtime"
-
 	"github.com/pkg/errors"
-
 	docker_utils_factory "github.com/bborbe/docker-utils/factory"
 	"github.com/bborbe/docker-utils/model"
 	flag "github.com/bborbe/flagenv"
@@ -31,7 +29,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	writer := os.Stdout
 	if err := do(writer); err != nil {
-		glog.Exit(err)
+		glog.Exitf("%+v", err)
 	}
 }
 
@@ -41,7 +39,7 @@ func do(writer io.Writer) error {
 	if len(*passwordFilePtr) > 0 {
 		password, err = model.RegistryPasswordFromFile(*passwordFilePtr)
 		if err != nil {
-			return fmt.Errorf("get password from file failed: %v", err)
+			return errors.Wrap(err, "get password from file failed")
 		}
 	}
 	registry := model.Registry{
@@ -51,7 +49,7 @@ func do(writer io.Writer) error {
 	}
 	if *credentialsfromfilePtr {
 		if err := registry.ReadCredentialsFromDockerConfig(); err != nil {
-			return fmt.Errorf("read credentials failed: %v", err)
+			return errors.Wrap(err, "read credentials failed")
 		}
 	}
 	repositoryName := model.RepositoryName(*repositoryPtr)
@@ -59,7 +57,7 @@ func do(writer io.Writer) error {
 
 	glog.V(2).Infof("use registry %v, repo %v and tag %v", registry, repositoryName, tag)
 	if err := registry.Validate(); err != nil {
-		return fmt.Errorf("validate registry failed: %v", err)
+		return errors.Wrap(err,"validate registry failed")
 	}
 	factory := docker_utils_factory.New()
 	sha, err := factory.Tags().Sha(registry, repositoryName, tag)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"io"
 	"os"
 	"runtime"
@@ -29,7 +30,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	writer := os.Stdout
 	if err := do(writer); err != nil {
-		glog.Exit(err)
+		glog.Exitf("%+v", err)
 	}
 }
 
@@ -49,7 +50,7 @@ func do(writer io.Writer) error {
 	}
 	if *credentialsfromfilePtr {
 		if err := registry.ReadCredentialsFromDockerConfig(); err != nil {
-			return fmt.Errorf("read credentials failed: %v", err)
+			return errors.Wrap(err, "read credentials failed")
 		}
 	}
 	repositoryName := model.RepositoryName(*repositoryPtr)
@@ -57,12 +58,11 @@ func do(writer io.Writer) error {
 
 	glog.V(2).Infof("use registry %v, repo %v and tag %v", registry, repositoryName, tag)
 	if err = registry.Validate(); err != nil {
-		return fmt.Errorf("validate registry failed: %v", err)
+		return errors.Wrap(err, "validate registry failed")
 	}
 	factory := docker_utils_factory.New()
 	if err = factory.Tags().Delete(registry, repositoryName, tag); err != nil {
-		glog.V(2).Infof("delete tag exists failed: %v", err)
-		return err
+		return errors.Wrap(err, "delete tag exists failed")
 	}
 	fmt.Fprintf(writer, "tag deleted\n")
 	return nil
