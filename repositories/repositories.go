@@ -3,9 +3,10 @@ package repositories
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"net/http"
 	"sort"
+
+	"github.com/pkg/errors"
 
 	"github.com/bborbe/docker-utils/model"
 	"github.com/bborbe/io/reader_shadow_copy"

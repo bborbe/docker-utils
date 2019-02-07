@@ -5,12 +5,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	"github.com/bborbe/io/util"
 	"github.com/golang/glog"
@@ -111,7 +112,7 @@ func (r *Registry) CredentialsFromDockerConfig(reader io.Reader) error {
 	}
 	auth, ok := data.Domain[nameToDomain(r.Name)]
 	if !ok {
-		return fmt.Errorf("domain %s not found in docker config", r.Name)
+		return errors.Errorf("domain %s not found in docker config", r.Name)
 	}
 	value, err := base64.StdEncoding.DecodeString(auth.Auth)
 	if err != nil {
@@ -154,12 +155,12 @@ func (r *Registry) GetToken() (RegistryToken, error) {
 	}
 	req.Header.Add("Content-Type", "application/json")
 	resp, err := http.DefaultClient.Do(req)
-	defer resp.Body.Close()
 	if err != nil {
 		return "", errors.Wrap(err, "request failed")
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode/100 != 2 {
-		return "", fmt.Errorf("status code %d != 2xx", resp.StatusCode)
+		return "", errors.Errorf("status code %d != 2xx", resp.StatusCode)
 	}
 	var data struct {
 		Token RegistryToken `json:"token"`
@@ -175,7 +176,7 @@ func (r *Registry) SetAuth(req *http.Request) error {
 	if r.Name.IsDockerHub() {
 		token, err := r.GetToken()
 		if err != nil {
-			return  errors.Wrap(err, "get token failed")
+			return errors.Wrap(err, "get token failed")
 		}
 		req.Header.Add("Authorization", fmt.Sprintf("JWT %s", token.String()))
 		glog.V(4).Infof("set Authorization header")

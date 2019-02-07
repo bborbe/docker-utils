@@ -5,11 +5,12 @@ import (
 	"io"
 	"os"
 	"runtime"
-	"github.com/pkg/errors"
+
 	docker_utils_factory "github.com/bborbe/docker-utils/factory"
 	"github.com/bborbe/docker-utils/model"
 	flag "github.com/bborbe/flagenv"
 	"github.com/golang/glog"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -57,7 +58,7 @@ func do(writer io.Writer) error {
 
 	glog.V(2).Infof("use registry %v, repo %v and tag %v", registry, repositoryName, tag)
 	if err := registry.Validate(); err != nil {
-		return errors.Wrap(err,"validate registry failed")
+		return errors.Wrap(err, "validate registry failed")
 	}
 	factory := docker_utils_factory.New()
 	sha, err := factory.Tags().Sha(registry, repositoryName, tag)

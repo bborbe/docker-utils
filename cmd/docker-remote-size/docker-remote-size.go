@@ -19,7 +19,6 @@ var (
 	usernamePtr            = flag.String(model.ParameterUsername, "", "Username")
 	passwordPtr            = flag.String(model.ParameterPassword, "", "Password")
 	passwordFilePtr        = flag.String(model.ParameterPasswordFile, "", "Password-File")
-	repositoryPtr          = flag.String(model.ParameterRepository, "", "Repository")
 	credentialsfromfilePtr = flag.Bool(model.ParameterCredentialsFromDockerConfig, false, "Read Username and Password from ~/.docker/config.json")
 )
 
@@ -40,7 +39,7 @@ func do(writer io.Writer) error {
 	if len(*passwordFilePtr) > 0 {
 		password, err = model.RegistryPasswordFromFile(*passwordFilePtr)
 		if err != nil {
-			return errors.Wrap(err, "read registry password from file")
+			return err
 		}
 	}
 	registry := model.Registry{
@@ -53,18 +52,34 @@ func do(writer io.Writer) error {
 			return errors.Wrap(err, "read credentials failed")
 		}
 	}
-	repositoryName := model.RepositoryName(*repositoryPtr)
-	glog.V(2).Infof("use registry %v and repo %v", registry, repositoryName)
+	glog.V(2).Infof("use registry %v", registry)
 	if err := registry.Validate(); err != nil {
 		return errors.Wrap(err, "validate registry failed")
 	}
 	factory := docker_utils_factory.New()
-	tags, err := factory.Tags().List(registry, repositoryName)
+	repositories, err := factory.Repositories().List(registry)
 	if err != nil {
-		return errors.Wrap(err, "list tags failed")
+		return err
 	}
-	for _, tag := range tags {
-		fmt.Fprintf(writer, "%s\n", tag.String())
+	for _, repository := range repositories {
+		tags, err := factory.Tags().List(registry, repository)
+		if err != nil {
+			glog.Warningf("list tags %s %s failed\n", registry.Name, repository.String())
+			continue
+		}
+		var size int
+		for _, tag := range tags {
+			manifest, err := factory.Tags().Manifest(registry, repository, tag)
+			if err != nil {
+				glog.Warningf("get manifest %s %s %s failed\n", registry.Name, repository.String(), tag.String())
+				continue
+			}
+			size += manifest.Config.Size
+			for _, layer := range manifest.Layers {
+				size += layer.Size
+			}
+		}
+		fmt.Fprintf(writer, "%s %d MB\n", repository.String(), size/1024/1024)
 	}
 	return nil
 }

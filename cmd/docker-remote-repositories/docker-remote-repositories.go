@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"os"
 	"runtime"
+
+	"github.com/pkg/errors"
 
 	docker_utils_factory "github.com/bborbe/docker-utils/factory"
 	"github.com/bborbe/docker-utils/model"

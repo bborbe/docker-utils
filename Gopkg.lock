@@ -3,19 +3,19 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3a140306d7151491c83a326c7af43598d4b4edcf30ffd74c7c1b43f6bcbf283c"
+  digest = "1:4b3aa9e7bdcc1bab1d9674d692d4333b9ca81d6f7147b64d0151bf84efdcb837"
   name = "github.com/bborbe/assert"
   packages = ["."]
   pruneopts = "UT"
-  revision = "2380757c64e19114afcb9bebe6e724c2026fae6a"
+  revision = "22a6c6341415573bf3e46e05aabb0850403bed2b"
 
 [[projects]]
   branch = "master"
-  digest = "1:936d21455d9f0c5cfa8f15f60b9606a9b54f1f251c2a72cc2f8f2197d0e211dd"
+  digest = "1:a5a7d0b0cda13e9cef2e025a1cca547b6409b38bd7cbbadc39d1de829b592381"
   name = "github.com/bborbe/flagenv"
   packages = ["."]
   pruneopts = "UT"
-  revision = "121c0cff072d7535484fc4a6163d9a4fefb07f58"
+  revision = "2956c4545608fea556c77ca58fcb1cda499defff"
 
 [[projects]]
   branch = "master"
@@ -45,12 +45,12 @@
   revision = "23def4e6c14b4da8ac2ed8007337bc5eb5007998"
 
 [[projects]]
-  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
+  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
   name = "github.com/pkg/errors"
   packages = ["."]
   pruneopts = "UT"
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
 
 [solve-meta]
   analyzer-name = "dep"
