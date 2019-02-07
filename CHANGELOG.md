@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.5.0
+
+- Rename docker-remote-size to docker-remote-size-repositories
+- Add docker-remote-size-tags command
+
 ## 1.4.0
 
 - Add docker-remote-size command

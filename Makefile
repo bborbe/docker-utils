@@ -3,7 +3,8 @@ default: test
 install:
 	GOBIN=$(GOPATH)/bin GO15VENDOREXPERIMENT=1 go install cmd/docker-remote-repositories/*.go
 	GOBIN=$(GOPATH)/bin GO15VENDOREXPERIMENT=1 go install cmd/docker-remote-sha-for-tag/*.go
-	GOBIN=$(GOPATH)/bin GO15VENDOREXPERIMENT=1 go install cmd/docker-remote-size/*.go
+	GOBIN=$(GOPATH)/bin GO15VENDOREXPERIMENT=1 go install cmd/docker-remote-size-repositories/*.go
+	GOBIN=$(GOPATH)/bin GO15VENDOREXPERIMENT=1 go install cmd/docker-remote-size-tags/*.go
 	GOBIN=$(GOPATH)/bin GO15VENDOREXPERIMENT=1 go install cmd/docker-remote-tag-delete/*.go
 	GOBIN=$(GOPATH)/bin GO15VENDOREXPERIMENT=1 go install cmd/docker-remote-tag-exists/*.go
 	GOBIN=$(GOPATH)/bin GO15VENDOREXPERIMENT=1 go install cmd/docker-remote-tags/*.go
