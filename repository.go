@@ -1,4 +1,4 @@
-package model
+package docker
 
 type RepositoryName string
 

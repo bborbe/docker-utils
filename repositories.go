@@ -1,4 +1,4 @@
-package repositories
+package docker
 
 import (
 	"encoding/json"
@@ -6,28 +6,26 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/pkg/errors"
-
-	"github.com/bborbe/docker-utils/model"
 	"github.com/bborbe/io/reader_shadow_copy"
 	"github.com/golang/glog"
+	"github.com/pkg/errors"
 )
 
 type Repositories interface {
-	List(registry model.Registry) ([]model.RepositoryName, error)
+	List(registry Registry) ([]RepositoryName, error)
 }
 
 type repositories struct {
 	httpClient *http.Client
 }
 
-func New(httpClient *http.Client) *repositories {
-	c := new(repositories)
-	c.httpClient = httpClient
-	return c
+func NewRepositories(httpClient *http.Client) Repositories {
+	return &repositories{
+		httpClient: httpClient,
+	}
 }
 
-func (r *repositories) List(registry model.Registry) ([]model.RepositoryName, error) {
+func (r *repositories) List(registry Registry) ([]RepositoryName, error) {
 	url := fmt.Sprintf("%s/v2/_catalog", registry.Name.Url())
 	glog.V(2).Infof("request url: %v", url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -53,10 +51,10 @@ func (r *repositories) List(registry model.Registry) ([]model.RepositoryName, er
 		glog.Infof(string(reader.Bytes()))
 	}
 	repositories := response.Repositories
-	sort.Sort(model.RepositoryNamesByName(repositories))
+	sort.Sort(RepositoryNamesByName(repositories))
 	return repositories, nil
 }
 
 type response struct {
-	Repositories []model.RepositoryName `json:"repositories"`
+	Repositories []RepositoryName `json:"repositories"`
 }
