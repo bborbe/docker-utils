@@ -1,4 +1,4 @@
-package model
+package docker
 
 import (
 	"bytes"
@@ -180,7 +180,7 @@ func (r *Registry) SetAuth(req *http.Request) error {
 		}
 		req.Header.Add("Authorization", fmt.Sprintf("JWT %s", token.String()))
 		glog.V(4).Infof("set Authorization header")
-	} else {
+	} else if r.Username.String() != "" && r.Password.String() != "" {
 		req.SetBasicAuth(r.Username.String(), r.Password.String())
 		glog.V(4).Infof("set basic auth")
 	}

@@ -1,4 +1,4 @@
-package tags
+package docker
 
 import (
 	"encoding/json"
@@ -7,32 +7,30 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/pkg/errors"
-
-	"github.com/bborbe/docker-utils/model"
 	"github.com/bborbe/io/reader_shadow_copy"
 	"github.com/golang/glog"
+	"github.com/pkg/errors"
 )
 
 type Tags interface {
-	Delete(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) error
-	Exists(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (bool, error)
-	List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error)
-	Sha(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (string, error)
-	Manifest(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (*Manifest, error)
+	Delete(registry Registry, repositoryName RepositoryName, tag Tag) error
+	Exists(registry Registry, repositoryName RepositoryName, tag Tag) (bool, error)
+	List(registry Registry, repositoryName RepositoryName) ([]Tag, error)
+	Sha(registry Registry, repositoryName RepositoryName, tag Tag) (string, error)
+	Manifest(registry Registry, repositoryName RepositoryName, tag Tag) (*Manifest, error)
 }
 
 type tagsConnector struct {
 	httpClient *http.Client
 }
 
-func New(httpClient *http.Client) *tagsConnector {
-	c := new(tagsConnector)
-	c.httpClient = httpClient
-	return c
+func NewTags(httpClient *http.Client) Tags {
+	return &tagsConnector{
+		httpClient: httpClient,
+	}
 }
 
-func (r *tagsConnector) Delete(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) error {
+func (r *tagsConnector) Delete(registry Registry, repositoryName RepositoryName, tag Tag) error {
 	dockerContentDigest, err := r.Sha(registry, repositoryName, tag)
 	if err != nil {
 		return errors.Wrap(err, "get content digest failed")
@@ -56,7 +54,7 @@ func (r *tagsConnector) Delete(registry model.Registry, repositoryName model.Rep
 	return nil
 }
 
-func (r *tagsConnector) Sha(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (string, error) {
+func (r *tagsConnector) Sha(registry Registry, repositoryName RepositoryName, tag Tag) (string, error) {
 	url := fmt.Sprintf("%s/v2/%v/manifests/%v", registry.Name.Url(), repositoryName.String(), tag.String())
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -80,7 +78,7 @@ func (r *tagsConnector) Sha(registry model.Registry, repositoryName model.Reposi
 	return resp.Header.Get("Docker-Content-Digest"), nil
 }
 
-func (r *tagsConnector) Exists(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (bool, error) {
+func (r *tagsConnector) Exists(registry Registry, repositoryName RepositoryName, tag Tag) (bool, error) {
 	tags, err := r.List(registry, repositoryName)
 	if err != nil {
 		return false, errors.Wrap(err, "list tags failed")
@@ -95,7 +93,7 @@ func (r *tagsConnector) Exists(registry model.Registry, repositoryName model.Rep
 	return false, nil
 }
 
-func (r *tagsConnector) List(registry model.Registry, repositoryName model.RepositoryName) ([]model.Tag, error) {
+func (r *tagsConnector) List(registry Registry, repositoryName RepositoryName) ([]Tag, error) {
 	url := fmt.Sprintf("%s/v2/%v/tags/list", registry.Name.Url(), repositoryName.String())
 	glog.V(2).Infof("request url: %v", url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -114,8 +112,8 @@ func (r *tagsConnector) List(registry model.Registry, repositoryName model.Repos
 		return nil, errors.Errorf("request failed with status: %d", resp.StatusCode)
 	}
 	var response struct {
-		Name string      `json:"name"`
-		Tags []model.Tag `json:"tags"`
+		Name string `json:"name"`
+		Tags []Tag  `json:"tags"`
 	}
 	reader := reader_shadow_copy.New(resp.Body)
 	if err := json.NewDecoder(reader).Decode(&response); err != nil {
@@ -125,7 +123,7 @@ func (r *tagsConnector) List(registry model.Registry, repositoryName model.Repos
 		glog.Infof(string(reader.Bytes()))
 	}
 	tags := response.Tags
-	sort.Sort(model.TagsByName(tags))
+	sort.Sort(TagsByName(tags))
 	return tags, nil
 }
 
@@ -142,7 +140,7 @@ type Manifest struct {
 	Layers        []ManifestConfig `json:"layers"`
 }
 
-func (r *tagsConnector) Manifest(registry model.Registry, repositoryName model.RepositoryName, tag model.Tag) (*Manifest, error) {
+func (r *tagsConnector) Manifest(registry Registry, repositoryName RepositoryName, tag Tag) (*Manifest, error) {
 	url := fmt.Sprintf("%s/v2/%v/manifests/%v", registry.Name.Url(), repositoryName.String(), tag.String())
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {

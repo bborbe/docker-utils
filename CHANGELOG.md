@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.6.0
+
+- make username and password optional
+- remove subpackages
+- use go modules
+
 ## 1.5.0
 
 - Rename docker-remote-size to docker-remote-size-repositories
