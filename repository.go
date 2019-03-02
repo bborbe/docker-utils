@@ -22,5 +22,5 @@ func (t RepositoryNamesByName) Less(i, j int) bool {
 
 type Repository struct {
 	Name RepositoryName
-	Tag  Tag
+	Tag  TagName
 }

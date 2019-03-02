@@ -1,12 +1,12 @@
 package docker
 
-type Tag string
+type TagName string
 
-func (t Tag) String() string {
+func (t TagName) String() string {
 	return string(t)
 }
 
-type TagsByName []Tag
+type TagsByName []TagName
 
 func (t TagsByName) Len() int {
 	return len(t)

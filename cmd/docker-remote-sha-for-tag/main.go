@@ -1,26 +1,24 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"io"
-	"os"
+	"net/http"
 	"runtime"
 
 	"github.com/bborbe/docker-utils"
 	flag "github.com/bborbe/flagenv"
-	http_client_builder "github.com/bborbe/http/client_builder"
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
 )
 
 var (
-	registryPtr            = flag.String("registry", "", "Registry")
-	usernamePtr            = flag.String("username", "", "Username")
-	passwordPtr            = flag.String("password", "", "Password")
-	passwordFilePtr        = flag.String("passwordfile", "", "Password-File")
-	repositoryPtr          = flag.String("repository", "", "Repository")
-	tagPtr                 = flag.String("tag", "", "Tag")
-	credentialsfromfilePtr = flag.Bool("credentialsfromfile", false, "Read Username and Password from ~/.docker/config.json")
+	registryPtr     = flag.String("registry", "", "Registry")
+	usernamePtr     = flag.String("username", "", "Username")
+	passwordPtr     = flag.String("password", "", "Password")
+	passwordFilePtr = flag.String("passwordfile", "", "Password-File")
+	repositoryPtr   = flag.String("repository", "", "Repository")
+	tagPtr          = flag.String("tag", "", "Tag")
 )
 
 func main() {
@@ -28,40 +26,28 @@ func main() {
 	glog.CopyStandardLogTo("info")
 	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	writer := os.Stdout
-	if err := do(writer); err != nil {
+	if err := do(context.Background()); err != nil {
 		glog.Exitf("%+v", err)
 	}
 }
 
-func do(writer io.Writer) error {
-	var err error
-	password := docker.RegistryPassword(*passwordPtr)
+func do(ctx context.Context) error {
+	registry := &docker.Registry{
+		Url:      *registryPtr,
+		Username: *usernamePtr,
+		Password: *passwordPtr,
+	}
 	if len(*passwordFilePtr) > 0 {
-		password, err = docker.RegistryPasswordFromFile(*passwordFilePtr)
-		if err != nil {
-			return errors.Wrap(err, "get password from file failed")
+		if err := registry.RegistryPasswordFromFile(*passwordFilePtr); err != nil {
+			return err
 		}
 	}
-	registry := docker.Registry{
-		Name:     docker.RegistryName(*registryPtr),
-		Username: docker.RegistryUsername(*usernamePtr),
-		Password: password,
-	}
-	if *credentialsfromfilePtr {
-		if err := registry.ReadCredentialsFromDockerConfig(); err != nil {
-			return errors.Wrap(err, "read credentials failed")
-		}
-	}
-	repositoryName := docker.RepositoryName(*repositoryPtr)
-	tag := docker.Tag(*tagPtr)
-
-	glog.V(2).Infof("use registry %v, repo %v and tag %v", registry, repositoryName, tag)
-	tags := docker.NewTags(http_client_builder.New().WithoutProxy().Build())
-	sha, err := tags.Sha(registry, repositoryName, tag)
+	glog.V(2).Infof("use registry %v, repo %v and tag %v", registry, docker.RepositoryName(*repositoryPtr), docker.TagName(*tagPtr))
+	client := docker.NewV2Client(docker.NewHttpClient(http.DefaultClient), *registry)
+	sha, err := client.Sha(ctx, docker.RepositoryName(*repositoryPtr), docker.TagName(*tagPtr))
 	if err != nil {
 		return errors.Wrap(err, "get sha failed")
 	}
-	fmt.Fprintf(writer, "%v\n", sha)
+	fmt.Printf("%v\n", sha)
 	return nil
 }

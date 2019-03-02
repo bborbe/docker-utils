@@ -1,16 +1,22 @@
-package main
+package main_test
 
 import (
 	"testing"
 
-	"bytes"
-
-	. "github.com/bborbe/assert"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/gexec"
 )
 
-func TestResumeFail(t *testing.T) {
-	writer := &bytes.Buffer{}
-	if err := AssertThat(do(writer), NotNilValue()); err != nil {
-		t.Fatal(err)
-	}
+var _ = Describe("Docker Remote Sha for Tag", func() {
+	It("Compiles", func() {
+		var err error
+		_, err = gexec.Build("github.com/bborbe/docker-utils/cmd/docker-remote-tag-delete")
+		Expect(err).NotTo(HaveOccurred())
+	})
+})
+
+func TestSuite(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Docker Remote Sha for Tag Suite")
 }
