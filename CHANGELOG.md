@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.7.0
+
+- add dockerhub-cleaner
+
 ## 1.6.0
 
 - make username and password optional
