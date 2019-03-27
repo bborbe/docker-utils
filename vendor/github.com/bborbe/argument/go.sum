@@ -1,15 +1,5 @@
-github.com/bborbe/argument v1.0.0 h1:+RhL8OwsdENaHPQMUgWe+xhwcAIPD+NDpb85kkle6e8=
-github.com/bborbe/argument v1.0.0/go.mod h1:KPaTNRsOSHdwdx8fGi88NsZsfDuY0rccDTcAzgbwzjs=
-github.com/bborbe/assert v0.0.0-20181116222016-22a6c6341415 h1:/JFZMMM/HYFeb44D+MSlYTFVI2a9zz2UPK0h9scycxA=
-github.com/bborbe/assert v0.0.0-20181116222016-22a6c6341415/go.mod h1:kASVnwjQZw9E9ne6ofCNXmKseNDlW14YPA+opAL9v18=
-github.com/bborbe/flagenv v0.0.0-20181019084341-2956c4545608 h1:WD5LwN4yz5bQpYIT0KAebOIUPUMz9ZP4vBiadsKOLFE=
-github.com/bborbe/flagenv v0.0.0-20181019084341-2956c4545608/go.mod h1:oZ1L1s6wqAP7Mj9TJL9qWMXdPBkj0cFYn8834EK+5QE=
-github.com/bborbe/io v0.0.0-20180829202151-54b762caaee8 h1:wlnAUbX/SI3I5sKG3D7NdlGMlm+JGEpM+5uZ3ZRbcKs=
-github.com/bborbe/io v0.0.0-20180829202151-54b762caaee8/go.mod h1:12dKinTbtiCZfFlwJUPVJl1hWLdD+/iV5w5afFSO+Ew=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
-github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b h1:VKtxabqXZkF25pY9ekfRL6a582T4P37/31XEstQ5p58=
-github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/hpcloud/tail v1.0.0 h1:nfCOvKYfkgYP8hkirhJocXT2+zOD8yUNjXaWfTlyFKI=

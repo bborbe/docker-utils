@@ -11,6 +11,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/bborbe/argument"
+
 	"github.com/pkg/errors"
 
 	"github.com/bborbe/docker-utils"
@@ -18,30 +20,15 @@ import (
 	"github.com/golang/glog"
 )
 
-const defaultMaxAge = 100 * 24 * time.Hour
-
 func main() {
 	defer glog.Flush()
 	glog.CopyStandardLogTo("info")
 	runtime.GOMAXPROCS(runtime.NumCPU())
-
-	app := &application{
-		registry: docker.Registry{
-			Url: "https://registry-1.docker.io",
-		},
-	}
-	flag.StringVar(&app.registry.Username, "username", "", "Registry Username")
-	flag.StringVar(&app.registry.Password, "password", "", "Registry Password")
-	flag.StringVar(&app.passwordFile, "passwordfile", "", "Password-File")
-	flag.DurationVar(&app.maxAge, "max-age", defaultMaxAge, "Max age")
-
 	_ = flag.Set("logtostderr", "true")
-	flag.Parse()
 
-	app.printArgs()
-
-	if err := app.validate(); err != nil {
-		glog.Exit(err)
+	app := &application{}
+	if err := argument.Parse(app); err != nil {
+		glog.Exitf("parse args failed: %v", err)
 	}
 
 	glog.V(0).Infof("application started")
@@ -71,40 +58,36 @@ func contextWithSig(ctx context.Context) context.Context {
 }
 
 type application struct {
-	registry     docker.Registry
-	passwordFile string
-	maxAge       time.Duration
-}
-
-func (a *application) printArgs() {
-	glog.V(0).Infof("Parameter registry.url: %s", a.registry.Url)
-	glog.V(0).Infof("Parameter registry.username: %s", a.registry.Username)
-	glog.V(0).Infof("Parameter registry.password length: %d", len(a.registry.Password))
-	glog.V(0).Infof("Parameter passwordFile: %s", a.passwordFile)
-	glog.V(0).Infof("Parameter maxAge: %v", a.maxAge)
-}
-
-func (a *application) validate() error {
-	return nil
+	Url          string        `required:"true" arg:"url" default:"https://registry-1.docker.io" usage:"Registry Url"`
+	Username     string        `required:"true" arg:"username" usage:"Registry Username"`
+	Password     string        `arg:"password" usage:"Registry Password"`
+	PasswordFile string        `arg:"passwordfile" usage:"Password-File"`
+	MaxAge       time.Duration `required:"true" arg:"max-age" usage:"Max age" default:"2400h"`
 }
 
 func (a *application) run(ctx context.Context) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	if len(a.passwordFile) > 0 {
-		if err := a.registry.RegistryPasswordFromFile(a.passwordFile); err != nil {
+	registry := docker.Registry{
+		Url:      a.Url,
+		Username: a.Username,
+		Password: a.Password,
+	}
+
+	if len(a.PasswordFile) > 0 {
+		if err := registry.RegistryPasswordFromFile(a.PasswordFile); err != nil {
 			return err
 		}
 	}
 	now := time.Now()
 
 	httpClient := docker.NewHttpClient(http.DefaultClient)
-	dockerHubClient := docker.NewDockerHubClient(httpClient, a.registry)
+	dockerHubClient := docker.NewDockerHubClient(httpClient, registry)
 	repositories := make(chan docker.DockerHubTagRepository, runtime.NumCPU())
 	go func() {
 		defer close(repositories)
-		if err := dockerHubClient.ListRepositories(ctx, docker.RepositoryName(a.registry.Username), repositories); err != nil {
+		if err := dockerHubClient.ListRepositories(ctx, docker.RepositoryName(registry.Username), repositories); err != nil {
 			glog.Warningf("read repositories failed: %v", err)
 			cancel()
 		}
@@ -137,7 +120,7 @@ func (a *application) run(ctx context.Context) error {
 					if err != nil {
 						return errors.Wrapf(err, "parse date %s failed", tag.LastUpdated)
 					}
-					if now.Sub(date) > a.maxAge {
+					if now.Sub(date) > a.MaxAge {
 						list = append(list, entry{
 							Tag:  tag.Tag,
 							Repo: repository.RepositoryName(),

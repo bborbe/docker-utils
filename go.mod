@@ -1,6 +1,7 @@
 module github.com/bborbe/docker-utils
 
 require (
+	github.com/bborbe/argument v1.0.0
 	github.com/bborbe/assert v0.0.0-20181116222016-22a6c6341415 // indirect
 	github.com/bborbe/flagenv v0.0.0-20181019084341-2956c4545608
 	github.com/bborbe/io v0.0.0-20180829202151-54b762caaee8
