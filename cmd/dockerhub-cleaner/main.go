@@ -60,7 +60,7 @@ func contextWithSig(ctx context.Context) context.Context {
 type application struct {
 	Url          string        `required:"true" arg:"url" default:"https://registry-1.docker.io" usage:"Registry Url"`
 	Username     string        `required:"true" arg:"username" usage:"Registry Username"`
-	Password     string        `arg:"password" usage:"Registry Password"`
+	Password     string        `arg:"password" usage:"Registry Password" display:"length"`
 	PasswordFile string        `arg:"passwordfile" usage:"Password-File"`
 	MaxAge       time.Duration `required:"true" arg:"max-age" usage:"Max age" default:"2400h"`
 }

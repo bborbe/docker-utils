@@ -58,3 +58,13 @@ docker-remote-tag-delete \
 -alsologtostderr \
 -v=0
 ```
+
+## Delete old images on Dockerhub
+
+`go get github.com/bborbe/docker-utils/cmd/dockerhub-cleaner`
+
+```
+dockerhub-cleaner \
+-username bborbe \
+-password xxx
+```
