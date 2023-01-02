@@ -45,45 +45,37 @@ func ValidateRequired(data interface{}) error {
 			if empty == ef.Interface() {
 				return createError()
 			}
-			return nil
 		case bool:
-			return nil
 		case int:
 			var empty int
 			if empty == ef.Interface() {
 				return createError()
 			}
-			return nil
 		case int64:
 			var empty int64
 			if empty == ef.Interface() {
 				return createError()
 			}
-			return nil
 		case uint:
 			var empty uint
 			if empty == ef.Interface() {
 				return createError()
 			}
-			return nil
 		case uint64:
 			var empty uint64
 			if empty == ef.Interface() {
 				return createError()
 			}
-			return nil
 		case float64:
 			var empty float64
 			if empty == ef.Interface() {
 				return createError()
 			}
-			return nil
 		case time.Duration:
 			var empty time.Duration
 			if empty == ef.Interface() {
 				return createError()
 			}
-			return nil
 		default:
 			return errors.Errorf("field %s with type %T is unsupported", tf.Name, ef.Interface())
 		}

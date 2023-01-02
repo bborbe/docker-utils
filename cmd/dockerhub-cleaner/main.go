@@ -12,12 +12,10 @@ import (
 	"time"
 
 	"github.com/bborbe/argument"
-
-	"github.com/pkg/errors"
-
 	"github.com/bborbe/docker-utils"
 	flag "github.com/bborbe/flagenv"
 	"github.com/golang/glog"
+	"github.com/pkg/errors"
 )
 
 func main() {
