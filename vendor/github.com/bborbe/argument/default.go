@@ -58,6 +58,11 @@ func DefaultValues(data interface{}) (map[string]interface{}, error) {
 			if err != nil {
 				return nil, errors.Errorf("parse field %s as %T failed: %v", tf.Name, ef.Interface(), err)
 			}
+		case *float64:
+			values[tf.Name], err = strconv.ParseFloat(value, 64)
+			if err != nil {
+				return nil, errors.Errorf("parse field %s as %T failed: %v", tf.Name, ef.Interface(), err)
+			}
 		case time.Duration:
 			values[tf.Name], err = time.ParseDuration(value)
 			if err != nil {

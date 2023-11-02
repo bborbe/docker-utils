@@ -33,7 +33,7 @@ func argsToValues(data interface{}, args []string) (map[string]interface{}, erro
 		if !ok {
 			continue
 		}
-		defaultString := tf.Tag.Get("default")
+		defaultString, found := tf.Tag.Lookup("default")
 		usage := tf.Tag.Get("usage")
 		switch ef.Interface().(type) {
 		case string:
@@ -56,6 +56,22 @@ func argsToValues(data interface{}, args []string) (map[string]interface{}, erro
 		case float64:
 			defaultValue, _ := strconv.ParseFloat(defaultString, 64)
 			values[tf.Name] = flag.CommandLine.Float64(argName, defaultValue, usage)
+		case *float64:
+			if found {
+				defaultValue, _ := strconv.ParseFloat(defaultString, 64)
+				values[tf.Name] = defaultValue
+			}
+			flag.CommandLine.Func(argName, usage, func(s string) error {
+				if s == "" {
+					return nil
+				}
+				v, err := strconv.ParseFloat(s, 64)
+				if err != nil {
+					return err
+				}
+				values[tf.Name] = v
+				return nil
+			})
 		case time.Duration:
 			defaultValue, _ := time.ParseDuration(defaultString)
 			values[tf.Name] = flag.CommandLine.Duration(argName, defaultValue, usage)

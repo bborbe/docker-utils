@@ -24,7 +24,15 @@ func Print(data interface{}) error {
 			log.Printf("Argument: %s length %d", t.Field(i).Name, len(fmt.Sprintf("%v", ef.Interface())))
 			continue
 		}
-		log.Printf("Argument: %s '%v'", t.Field(i).Name, ef.Interface())
+		if ef.Kind() == reflect.Ptr || ef.Kind() == reflect.Interface {
+			if ef.IsZero() {
+				log.Printf("Argument: %s <nil>", t.Field(i).Name)
+			} else {
+				log.Printf("Argument: %s '%v'", t.Field(i).Name, ef.Elem())
+			}
+		} else {
+			log.Printf("Argument: %s '%v'", t.Field(i).Name, ef.Interface())
+		}
 	}
 	return nil
 }
