@@ -66,6 +66,11 @@ func ValidateRequired(data interface{}) error {
 			if empty == ef.Interface() {
 				return createError()
 			}
+		case int32:
+			var empty int32
+			if empty == ef.Interface() {
+				return createError()
+			}
 		case float64:
 			var empty float64
 			if empty == ef.Interface() {

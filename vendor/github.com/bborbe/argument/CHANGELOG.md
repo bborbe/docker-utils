@@ -7,7 +7,25 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MAJOR version when you make incompatible API changes,
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
-        
+
+## v1.3.2
+
+- fix int32
+
+## v1.3.1
+
+- fix int32
+
+## v1.3.0
+
+- go mod update
+- allow int32 type
+
+## v1.2.4
+
+- add vulncheck
+- go mod update
+
 ## v1.2.3
 
 - fix parse of empty *float64

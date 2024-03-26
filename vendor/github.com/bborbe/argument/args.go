@@ -53,6 +53,9 @@ func argsToValues(data interface{}, args []string) (map[string]interface{}, erro
 		case uint64:
 			defaultValue, _ := strconv.ParseUint(defaultString, 10, 0)
 			values[tf.Name] = flag.CommandLine.Uint64(argName, defaultValue, usage)
+		case int32:
+			defaultValue, _ := strconv.ParseInt(defaultString, 10, 0)
+			values[tf.Name] = flag.CommandLine.Int(argName, int(defaultValue), usage)
 		case float64:
 			defaultValue, _ := strconv.ParseFloat(defaultString, 64)
 			values[tf.Name] = flag.CommandLine.Float64(argName, defaultValue, usage)
