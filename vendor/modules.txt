@@ -12,14 +12,10 @@ github.com/bborbe/io/reader_shadow_copy
 # github.com/bmatcuk/doublestar/v4 v4.6.1
 ## explicit; go 1.16
 github.com/bmatcuk/doublestar/v4
-# github.com/chzyer/readline v1.5.1
-## explicit; go 1.15
 # github.com/fsnotify/fsnotify v1.7.0
 ## explicit; go 1.17
 github.com/fsnotify/fsnotify
-# github.com/go-logr/logr v1.4.1
-## explicit; go 1.18
-# github.com/golang/glog v1.2.0
+# github.com/golang/glog v1.2.1
 ## explicit; go 1.19
 github.com/golang/glog
 github.com/golang/glog/internal/logsink
@@ -34,10 +30,8 @@ github.com/google/go-cmp/cmp/internal/diff
 github.com/google/go-cmp/cmp/internal/flags
 github.com/google/go-cmp/cmp/internal/function
 github.com/google/go-cmp/cmp/internal/value
-# github.com/google/pprof v0.0.0-20240320155624-b11c3daa6f07
+# github.com/google/pprof v0.0.0-20240422182052-72c8669ad3e7
 ## explicit; go 1.19
-# github.com/ianlancetaylor/demangle v0.0.0-20240312041847-bd984b5ce465
-## explicit; go 1.13
 # github.com/incu6us/goimports-reviser v0.1.6
 ## explicit; go 1.13
 github.com/incu6us/goimports-reviser
@@ -48,8 +42,8 @@ github.com/incu6us/goimports-reviser/reviser
 ## explicit; go 1.18
 github.com/kisielk/errcheck
 github.com/kisielk/errcheck/errcheck
-# github.com/kr/pretty v0.3.1
-## explicit; go 1.12
+# github.com/kr/text v0.2.0
+## explicit
 # github.com/maxbrunsfeld/counterfeiter/v6 v6.8.1
 ## explicit; go 1.20
 github.com/maxbrunsfeld/counterfeiter/v6
@@ -85,7 +79,7 @@ github.com/onsi/ginkgo/reporters/stenographer
 github.com/onsi/ginkgo/reporters/stenographer/support/go-colorable
 github.com/onsi/ginkgo/reporters/stenographer/support/go-isatty
 github.com/onsi/ginkgo/types
-# github.com/onsi/gomega v1.32.0
+# github.com/onsi/gomega v1.33.0
 ## explicit; go 1.20
 github.com/onsi/gomega
 github.com/onsi/gomega/format
@@ -102,28 +96,26 @@ github.com/onsi/gomega/types
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
-# github.com/rogpeppe/go-internal v1.12.0
-## explicit; go 1.20
 # github.com/stretchr/testify v1.9.0
 ## explicit; go 1.17
 # golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
 ## explicit; go 1.11
 golang.org/x/lint
 golang.org/x/lint/golint
-# golang.org/x/mod v0.16.0
+# golang.org/x/mod v0.17.0
 ## explicit; go 1.18
 golang.org/x/mod/internal/lazyregexp
 golang.org/x/mod/module
 golang.org/x/mod/semver
-# golang.org/x/net v0.22.0
+# golang.org/x/net v0.24.0
 ## explicit; go 1.18
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
-# golang.org/x/sync v0.6.0
+# golang.org/x/sync v0.7.0
 ## explicit; go 1.18
 golang.org/x/sync/errgroup
-# golang.org/x/sys v0.18.0
+# golang.org/x/sys v0.19.0
 ## explicit; go 1.18
 golang.org/x/sys/unix
 golang.org/x/sys/windows
@@ -149,7 +141,7 @@ golang.org/x/text/language
 golang.org/x/text/runes
 golang.org/x/text/transform
 golang.org/x/text/unicode/norm
-# golang.org/x/tools v0.19.0
+# golang.org/x/tools v0.20.0
 ## explicit; go 1.19
 golang.org/x/tools/go/analysis
 golang.org/x/tools/go/ast/astutil
@@ -180,11 +172,12 @@ golang.org/x/tools/internal/gopathwalk
 golang.org/x/tools/internal/imports
 golang.org/x/tools/internal/packagesinternal
 golang.org/x/tools/internal/pkgbits
+golang.org/x/tools/internal/stdlib
 golang.org/x/tools/internal/tokeninternal
 golang.org/x/tools/internal/typeparams
 golang.org/x/tools/internal/typesinternal
 golang.org/x/tools/internal/versions
-# golang.org/x/vuln v1.0.4
+# golang.org/x/vuln v1.1.0
 ## explicit; go 1.18
 golang.org/x/vuln/cmd/govulncheck
 golang.org/x/vuln/internal
@@ -194,15 +187,13 @@ golang.org/x/vuln/internal/derrors
 golang.org/x/vuln/internal/gosym
 golang.org/x/vuln/internal/govulncheck
 golang.org/x/vuln/internal/osv
+golang.org/x/vuln/internal/sarif
 golang.org/x/vuln/internal/scan
 golang.org/x/vuln/internal/semver
+golang.org/x/vuln/internal/traces
 golang.org/x/vuln/internal/vulncheck
 golang.org/x/vuln/internal/web
 golang.org/x/vuln/scan
-# google.golang.org/protobuf v1.33.0
-## explicit; go 1.17
-# gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c
-## explicit; go 1.11
 # gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
 ## explicit
 gopkg.in/tomb.v1
