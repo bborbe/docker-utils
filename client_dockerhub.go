@@ -115,6 +115,7 @@ func (c *dockerHubClient) ListTags(ctx context.Context, repositoryName Repositor
 		}
 	}
 }
+
 func (c *dockerHubClient) DeleteTag(ctx context.Context, repositoryName RepositoryName, tag TagName) error {
 	url := fmt.Sprintf("https://hub.docker.com/v2/repositories/%s/tags/%s/", repositoryName.String(), tag.String())
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
