@@ -5,7 +5,7 @@
 package docker
 
 import (
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -18,7 +18,7 @@ type Registry struct {
 }
 
 func (r *Registry) RegistryPasswordFromFile(path string) error {
-	content, err := ioutil.ReadFile(path)
+	content, err := os.ReadFile(path)
 	if err != nil {
 		return errors.Wrap(err, "read file failed")
 	}

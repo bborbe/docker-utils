@@ -7,7 +7,7 @@ package docker
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/bborbe/io/reader_shadow_copy"
@@ -48,7 +48,7 @@ func (h *httpClient) DoSuccess(ctx context.Context, req *http.Request) (*http.Re
 	if resp.StatusCode/100 != 2 {
 		if glog.V(4) {
 			defer resp.Body.Close()
-			bytes, _ := ioutil.ReadAll(resp.Body)
+			bytes, _ := io.ReadAll(resp.Body)
 			glog.Infof(string(bytes))
 		}
 		return nil, errors.Errorf("%s request to %s failed with statusCode %d", req.Method, req.URL.String(), resp.StatusCode)
