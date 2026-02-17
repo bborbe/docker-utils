@@ -8,6 +8,14 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## Unreleased
+
+- Update Go version from 1.24.2 to 1.26.0
+- Update direct dependencies (glog, addlicense, goimports-reviser, counterfeiter, gomega)
+- Update indirect dependencies (golang.org/x/*, google.golang.org/protobuf)
+- Add CI workflow for automated testing on pull requests and pushes
+- Add dependency exclusions for problematic k8s.io and go-logr versions
+
 ## v1.7.7
 
 - go mod update
