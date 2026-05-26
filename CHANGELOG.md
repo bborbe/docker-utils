@@ -8,10 +8,11 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
-## Unreleased
+## v1.7.9
 
 - Migrate to tools.env + Makefile @version pattern; remove tools.go
-- Switch dockerhub-cleaner from bborbe/argument v1 to v2 (eliminates residual tools.go-cascade pollution)
+- Switch dockerhub-cleaner from bborbe/argument v1 to v2
+- Update go.mod: bump Go 1.26.0→1.26.3, gomega 1.39.1→1.41.0, clean up excludes/replace directives
 
 ## v1.7.8
 

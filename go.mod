@@ -8,7 +8,7 @@ require (
 	github.com/bborbe/io v0.0.0-20180829202151-54b762caaee8
 	github.com/golang/glog v1.2.5
 	github.com/onsi/ginkgo v1.16.5
-	github.com/onsi/gomega v1.40.0
+	github.com/onsi/gomega v1.41.0
 	github.com/pkg/errors v0.9.1
 )
 
