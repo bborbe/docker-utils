@@ -8,6 +8,10 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## Unreleased
+
+- Migrate to tools.env + Makefile @version pattern; remove tools.go (note: indirect tool deps persist via unmigrated bborbe/argument v1)
+
 ## v1.7.8
 
 - Update Go version from 1.24.2 to 1.26.0
