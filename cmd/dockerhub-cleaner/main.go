@@ -15,7 +15,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/bborbe/argument"
+	"github.com/bborbe/argument/v2"
 	flag "github.com/bborbe/flagenv"
 	"github.com/golang/glog"
 	"github.com/pkg/errors"
@@ -29,13 +29,14 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	_ = flag.Set("logtostderr", "true")
 
+	ctx := contextWithSig(context.Background())
 	app := &application{}
-	if err := argument.Parse(app); err != nil {
+	if err := argument.Parse(ctx, app); err != nil {
 		glog.Exitf("parse args failed: %v", err)
 	}
 
 	glog.V(0).Infof("application started")
-	if err := app.run(contextWithSig(context.Background())); err != nil {
+	if err := app.run(ctx); err != nil {
 		glog.Exitf("application failed: %+v", err)
 	}
 	glog.V(0).Infof("application finished")

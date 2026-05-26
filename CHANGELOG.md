@@ -10,7 +10,8 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
-- Migrate to tools.env + Makefile @version pattern; remove tools.go (note: indirect tool deps persist via unmigrated bborbe/argument v1)
+- Migrate to tools.env + Makefile @version pattern; remove tools.go
+- Switch dockerhub-cleaner from bborbe/argument v1 to v2 (eliminates residual tools.go-cascade pollution)
 
 ## v1.7.8
 
