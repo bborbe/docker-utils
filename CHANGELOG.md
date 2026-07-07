@@ -8,6 +8,11 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## Unreleased
+
+- security: bump golang.org/x/net to v0.55.0 (CVE-2026-25680)
+- security: bump Go 1.26.3 to 1.26.4 (stdlib GO-2026-5039 net/textproto, GO-2026-5037 crypto/x509)
+
 ## v1.7.9
 
 - Migrate to tools.env + Makefile @version pattern; remove tools.go
