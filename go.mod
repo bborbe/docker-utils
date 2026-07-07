@@ -1,6 +1,6 @@
 module github.com/bborbe/docker-utils
 
-go 1.26.3
+go 1.26.4
 
 require (
 	github.com/bborbe/argument/v2 v2.12.22
