@@ -8,6 +8,11 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## Unreleased
+
+- update Go to 1.26.6 and update dependencies
+- security: bump golang.org/x/text to v0.39.0 (GO-2026-5970)
+
 ## v1.7.11
 
 - Bump bborbe/argument, collection, errors, math, parse, run, time, validation dependencies
