@@ -8,6 +8,9 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
+## Unreleased
+- chore: bump errcheck to v1.20.0 for Go 1.27 support
+
 ## v1.7.12
 
 - update Go to 1.26.6 and update dependencies
