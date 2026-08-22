@@ -10,7 +10,7 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
-- chore: update Go to 1.27.0 and github.com/bborbe/argument/v2 to v2.12.36
+- chore: update Go to 1.27.0 and dependencies (github.com/bborbe/argument/v2 to v2.12.36, github.com/bborbe/collection to v1.20.23, github.com/bborbe/errors to v1.5.20, github.com/bborbe/math to v1.3.21, github.com/bborbe/parse to v1.10.21, github.com/bborbe/run to v1.9.37, github.com/bborbe/time to v1.27.10, github.com/bborbe/validation to v1.4.21, github.com/prometheus/client_golang to v1.24.1, go.yaml.in/yaml/v3 to v3.0.5, golang.org/x/net to v0.58.0)
 
 ## v1.7.13
 - chore: bump errcheck to v1.20.0 for Go 1.27 support
