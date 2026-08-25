@@ -14,9 +14,9 @@ require (
 
 require (
 	github.com/bborbe/assert v0.0.0-20181116222016-22a6c6341415 // indirect
-	github.com/bborbe/collection v1.20.23 // indirect
+	github.com/bborbe/collection v1.20.24 // indirect
 	github.com/bborbe/errors v1.5.20 // indirect
-	github.com/bborbe/math v1.4.4 // indirect
+	github.com/bborbe/math v1.4.5 // indirect
 	github.com/bborbe/parse v1.10.21 // indirect
 	github.com/bborbe/run v1.9.37 // indirect
 	github.com/bborbe/time v1.27.10 // indirect
