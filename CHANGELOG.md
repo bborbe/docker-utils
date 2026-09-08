@@ -8,7 +8,7 @@ Please choose versions by [Semantic Versioning](http://semver.org/).
 * MINOR version when you add functionality in a backwards-compatible manner, and
 * PATCH version when you make backwards-compatible bug fixes.
 
-## Unreleased
+## v1.7.18
 
 - chore: update Go to 1.27.1 and github.com/bborbe/argument/v2 to v2.13.2, github.com/onsi/gomega to v1.43.0
 
