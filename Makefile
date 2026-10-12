@@ -32,7 +32,7 @@ errcheck:
 addlicense:
 	go run github.com/google/addlicense@$(ADDLICENSE_VERSION) -c "Benjamin Borbe" -y $$(date +'%Y') -l bsd $$(find . -name "*.go" -not -path './vendor/*')
 
-VULNCHECK_IGNORE ?= GO-2026-6603 GO-2026-6605 GO-2026-6607 GO-2026-6608 GO-2026-6610 GO-2026-6611 GO-2026-6613 GO-2026-6617
+VULNCHECK_IGNORE ?= GO-2026-6599 GO-2026-6600 GO-2026-6603 GO-2026-6604 GO-2026-6605 GO-2026-6607 GO-2026-6608 GO-2026-6609 GO-2026-6610 GO-2026-6611 GO-2026-6612 GO-2026-6613 GO-2026-6617
 
 .PHONY: vulncheck
 vulncheck:
