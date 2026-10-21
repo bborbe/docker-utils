@@ -1,6 +1,6 @@
 module github.com/bborbe/docker-utils
 
-go 1.27.2
+go 1.27.3
 
 require (
 	github.com/bborbe/argument/v2 v2.13.6
@@ -16,11 +16,11 @@ require (
 	github.com/bborbe/assert v0.0.0-20181116222016-22a6c6341415 // indirect
 	github.com/bborbe/collection v1.21.2 // indirect
 	github.com/bborbe/errors v1.6.3 // indirect
-	github.com/bborbe/math v1.4.14 // indirect
+	github.com/bborbe/math v1.4.15 // indirect
 	github.com/bborbe/parse v1.12.3 // indirect
 	github.com/bborbe/run v1.11.2 // indirect
-	github.com/bborbe/time v1.27.16 // indirect
-	github.com/bborbe/validation v1.5.4 // indirect
+	github.com/bborbe/time v1.27.17 // indirect
+	github.com/bborbe/validation v1.5.5 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
