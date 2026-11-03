@@ -3,7 +3,7 @@ module github.com/bborbe/docker-utils
 go 1.27.3
 
 require (
-	github.com/bborbe/argument/v2 v2.13.6
+	github.com/bborbe/argument/v2 v2.13.9
 	github.com/bborbe/flagenv v0.0.0-20181019084341-2956c4545608
 	github.com/bborbe/io v0.0.0-20180829202151-54b762caaee8
 	github.com/golang/glog v1.2.5
@@ -14,13 +14,13 @@ require (
 
 require (
 	github.com/bborbe/assert v0.0.0-20181116222016-22a6c6341415 // indirect
-	github.com/bborbe/collection v1.21.3 // indirect
-	github.com/bborbe/errors v1.6.3 // indirect
-	github.com/bborbe/math v1.4.15 // indirect
-	github.com/bborbe/parse v1.12.4 // indirect
-	github.com/bborbe/run v1.11.2 // indirect
-	github.com/bborbe/time v1.27.18 // indirect
-	github.com/bborbe/validation v1.5.5 // indirect
+	github.com/bborbe/collection v1.21.6 // indirect
+	github.com/bborbe/errors v1.6.6 // indirect
+	github.com/bborbe/math v1.4.18 // indirect
+	github.com/bborbe/parse v1.12.5 // indirect
+	github.com/bborbe/run v1.11.10 // indirect
+	github.com/bborbe/time v1.27.25 // indirect
+	github.com/bborbe/validation v1.5.8 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -28,12 +28,13 @@ require (
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/nxadm/tail v1.4.11 // indirect
+	github.com/pandatix/go-abnf v0.5.5 // indirect
 	github.com/prometheus/client_golang v1.25.0 // indirect
 	github.com/prometheus/client_model v0.6.3 // indirect
-	github.com/prometheus/common v0.72.1 // indirect
-	github.com/prometheus/procfs v0.22.0 // indirect
-	go.yaml.in/yaml/v3 v3.0.5 // indirect
-	golang.org/x/net v0.61.0 // indirect
+	github.com/prometheus/common v0.73.1 // indirect
+	github.com/prometheus/procfs v0.23.0 // indirect
+	go.yaml.in/yaml/v3 v3.0.6 // indirect
+	golang.org/x/net v0.62.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
