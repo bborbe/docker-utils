@@ -19,8 +19,8 @@ require (
 	github.com/bborbe/math v1.4.18 // indirect
 	github.com/bborbe/parse v1.12.5 // indirect
 	github.com/bborbe/run v1.11.10 // indirect
-	github.com/bborbe/time v1.27.25 // indirect
-	github.com/bborbe/validation v1.5.8 // indirect
+	github.com/bborbe/time v1.27.26 // indirect
+	github.com/bborbe/validation v1.5.9 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -35,8 +35,8 @@ require (
 	github.com/prometheus/procfs v0.23.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.6 // indirect
 	golang.org/x/net v0.62.0 // indirect
-	golang.org/x/sys v0.49.0 // indirect
-	golang.org/x/text v0.43.0 // indirect
+	golang.org/x/sys v0.50.0 // indirect
+	golang.org/x/text v0.44.0 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 )
